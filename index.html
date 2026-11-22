@@ -5,18 +5,30 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Seating Chart Planner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&family=Pinyon+Script&display=swap">
 <style>
-:root{
-  --bg:#f4efe7;--bg2:#ece5d9;--panel:#fbf8f3;--paper:#fffdf9;--ink:#26221e;--mute:#8c8377;--line:#e2d9cb;
-  --gold:#a98550;--gold-soft:#a9855033;--warn:#b5543f;--shadow:0 1px 2px #3a2e1f14,0 12px 40px -12px #3a2e1f33;
-  --table:#fffdf9;--dot:#d9cfbf;--yes:#5e7466;--no:#b5543f;
-  --serif:'Cormorant Garamond',Georgia,'Times New Roman',serif;--sans:'Jost',system-ui,-apple-system,'Segoe UI',sans-serif;
+:root{--serif:'Cormorant Garamond',Georgia,'Times New Roman',serif;--sans:'Jost',system-ui,-apple-system,'Segoe UI',sans-serif;--script:'Pinyon Script','Snell Roundhand','Brush Script MT',cursive;--wash:linear-gradient(transparent,transparent)}
+:root,:root[data-theme="olive"]{
+  --bg:#efe6cf;--bg2:#e4d9ba;--panel:#f3ebd7;--paper:#faf4e4;--ink:#2b2119;--mute:#76674f;--line:#d9ccac;
+  --gold:#a4833f;--gold-soft:#a4833f38;--warn:#a4543f;--shadow:0 1px 2px #1c1a0e33,0 18px 44px -14px #1c1a0e88;
+  --table:#f8f1de;--dot:#8f916b;--yes:#566b48;--no:#a4543f;
+  --solid:#2b2119;--solid-ink:#f3ebd7;--stagebg:#7b7d57;--vig:#43452b;--seat-line:#efe6cf;--seat-ink:#efe6cf;--hint:#efe6cfd0;
+  --hero:#f6eed8;--herobg:linear-gradient(135deg,#8a8c63,#686a46);--halo:#7b7d57;--grain:.4;
 }
-:root[data-theme="noir"]{
-  --bg:#12100e;--bg2:#0d0c0a;--panel:#1b1814;--paper:#221e19;--ink:#f0e9db;--mute:#8f8577;--line:#332d25;
-  --gold:#c9a76b;--gold-soft:#c9a76b3a;--warn:#e07a63;--shadow:0 1px 2px #0006,0 16px 50px -12px #000a;
-  --table:#27221c;--dot:#2a251f;--yes:#86ad90;--no:#e07a63;
+:root[data-theme="espresso"]{
+  --bg:#1e1611;--bg2:#372a20;--panel:#2a1f18;--paper:#35281f;--ink:#efe4cd;--mute:#a39379;--line:#45372a;
+  --gold:#c4a569;--gold-soft:#c4a56940;--warn:#e0866d;--shadow:0 1px 2px #0008,0 18px 50px -14px #000b;
+  --table:#3d2e23;--dot:#2c211a;--yes:#93b08b;--no:#e0866d;
+  --solid:#c4a569;--solid-ink:#1e1611;--stagebg:#1e1611;--vig:#0f0a07;--seat-line:#6f5d4a;--seat-ink:#a39379;--hint:#a39379;
+  --hero:#efe4cd;--herobg:linear-gradient(135deg,#3a2b20,#241a13);--halo:#1e1611;--grain:.55;
+}
+:root[data-theme="garden"]{
+  --bg:#f6f1e1;--bg2:#ebe4cf;--panel:#fbf7ea;--paper:#fffcf3;--ink:#3b3340;--mute:#7a7080;--line:#e1d9c3;
+  --gold:#8b789f;--gold-soft:#8b789f38;--warn:#b5604f;--shadow:0 1px 2px #3b334014,0 18px 44px -14px #3b334055;
+  --table:#fffcf3;--dot:#b4bfa5;--yes:#5f8062;--no:#b5604f;
+  --solid:#6d5f80;--solid-ink:#fffcf3;--stagebg:#c8d2b9;--vig:#8c9a7e;--seat-line:#fffcf3;--seat-ink:#6d6574;--hint:#56654f;
+  --hero:#3b3340;--herobg:linear-gradient(135deg,#dccad6,#bccbbd 55%,#c9d3bb);--halo:#c8d2b9;--grain:.28;
+  --wash:radial-gradient(700px 500px at 15% 15%,#ecc9c4aa,transparent 70%),radial-gradient(800px 600px at 90% 75%,#b8aed1aa,transparent 70%),radial-gradient(900px 500px at 55% 0%,#a8c4bdaa,transparent 70%);
 }
 *{box-sizing:border-box}
 html,body{height:100%}
@@ -216,6 +228,71 @@ body.view-rsvp #stage,body.view-rsvp #book,body.view-rsvp #dock,body.view-rsvp #
   #hint{display:none}
   #stage{top:calc(46vh + 24px)}
 }
+
+/* ================= skin: vintage paper & film ================= */
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:60;opacity:var(--grain);mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+#stage,#rsvp{background:var(--wash),radial-gradient(1300px 800px at 50% 38%,transparent 35%,var(--vig) 135%),radial-gradient(var(--dot) 1px,transparent 1.3px) 0 0/28px 28px,var(--stagebg)}
+#rsvp{background:var(--wash),radial-gradient(1300px 800px at 50% 30%,transparent 35%,var(--vig) 140%),var(--stagebg)}
+.btn{letter-spacing:.14em;font-size:11px}
+.btn.solid,#dock .btn.solid{background:var(--solid);color:var(--solid-ink);border-color:var(--solid)}
+.btn.solid:hover{color:var(--solid-ink)}
+.seg button.on,#viewNav button.on{background:var(--solid);color:var(--solid-ink)}
+#dock .btn:hover{background:var(--bg2)}
+.tctl{background:var(--solid)}.tctl button{color:var(--solid-ink)}
+#hint{color:var(--hint)}
+#viewNav::before{display:none}
+.caps{letter-spacing:.24em}
+
+/* guest book */
+#book{overflow:visible}
+#book::before{content:'';position:absolute;left:50%;top:-15px;width:20px;height:34px;transform:translateX(-50%);border-radius:4px 4px 7px 7px;background:linear-gradient(90deg,#7a6128,#e6cd86 40%,#f3e3a6 55%,#9b7d36);box-shadow:0 3px 5px #0006;z-index:3}
+#book::after{content:'';position:absolute;inset:7px;border:1px solid var(--gold-soft);border-radius:16px;pointer-events:none}
+.mast{padding:30px 24px 16px}
+.stamp{width:44px;height:54px;margin:0 auto 6px;transform:rotate(-3deg);background:var(--paper);border:5px dotted var(--panel);box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold),0 2px 4px #0003;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.stamp b{font:400 18px/1 var(--script);color:var(--gold)}
+.stamp i{font:500 5.5px/1 var(--sans);letter-spacing:.14em;color:var(--gold);font-style:normal}
+#evName{font-family:var(--script);font-style:normal;font-weight:400;font-size:44px;line-height:1.15}
+.mast .caps{margin:8px 0 0}
+.meter b{font-size:30px}
+.guest{background:var(--paper);border-radius:10px;box-shadow:0 1px 0 #fff6 inset,0 2px 6px -3px #0004}
+.guest .n b{font-size:19px}
+
+/* tables: pressed paper with a lace ring */
+.tbody{background:var(--table);border:1px solid var(--gold)}
+.tbody::after{content:'';position:absolute;inset:-6px;border-radius:inherit;border:2px dotted var(--gold);opacity:.55;pointer-events:none}
+.tbody.rect::after{border-radius:18px}
+.tlabel input{font-family:var(--script);font-style:normal;font-weight:400;font-size:28px;line-height:1.05;color:var(--ink)}
+.tlabel .cnt{margin-top:1px}
+.seat{border:1px dashed var(--seat-line);color:var(--seat-ink);opacity:1}
+.seat:hover{border-color:var(--paper);color:var(--paper);background:#ffffff22}
+.seat.full{border:2px solid var(--paper);color:#fffaf0;opacity:1}
+
+/* RSVP hero & cards */
+.rhead{position:relative;overflow:hidden;border-radius:6px;padding:74px 24px 64px;margin-bottom:22px;background:var(--herobg);box-shadow:var(--shadow);border:1px solid #ffffff22}
+.rhead>*{position:relative;z-index:1}
+#rCover{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;filter:sepia(.35) saturate(.75) contrast(.95) brightness(.72);display:none}
+.rhead.has-cover #rCover{display:block}
+.rhead.has-cover::before{content:'';position:absolute;inset:0;background:linear-gradient(#1b130c55,#1b130c88);z-index:0}
+.rhead .caps{color:var(--hero);opacity:.85}
+.rhead h2{font-family:var(--script);font-style:normal;font-weight:400;font-size:84px;line-height:1.1;margin:10px 0 14px;color:var(--hero)}
+.rhead.has-cover .caps,.rhead.has-cover h2,.rhead.has-cover .rsub{color:#fbf5e6}
+.rhead.has-cover h2{text-shadow:0 2px 24px #0008}
+.rsub{color:var(--hero);opacity:.9;text-shadow:0 1px 12px #0006;font-size:11px;letter-spacing:.3em;text-transform:uppercase;font-weight:500}
+.rhead .cbtns{position:absolute;right:14px;top:12px;display:flex;gap:6px;z-index:2}
+.rhead .cbtns .btn{padding:6px 12px;font-size:10px;background:#00000026;color:var(--hero);border-color:#ffffff40;backdrop-filter:blur(4px)}
+.rhead.has-cover .cbtns .btn{color:#fbf5e6}
+.card{position:relative;background:var(--panel)}
+.card::after{content:'';position:absolute;inset:6px;border:1px solid var(--gold-soft);border-radius:13px;pointer-events:none}
+.card h4.caps{font-family:var(--script);font-size:30px;letter-spacing:0;text-transform:none;color:var(--ink);font-weight:400;margin:-4px 0 10px;line-height:1.1}
+.stat-big b{font-size:54px}
+
+/* dialogs */
+dialog{outline:1px solid var(--gold-soft);outline-offset:-9px}
+dialog h3,#venuePanel h4{font-family:var(--script);font-style:normal;font-weight:400;font-size:40px;line-height:1.1}
+dialog::backdrop{background:#1b140a77}
+@media print{#printArea h2{font-family:'Pinyon Script',cursive;font-style:normal;font-weight:400;font-size:52px}body::after{display:none}}
+@media(max-width:900px){.rhead h2{font-size:56px}}
 </style>
 </head>
 <body>
@@ -224,8 +301,9 @@ body.view-rsvp #stage,body.view-rsvp #book,body.view-rsvp #dock,body.view-rsvp #
 
 <aside id="book">
   <div class="mast">
-    <span class="caps">Seating Chart</span>
+    <div class="stamp" aria-hidden="true"><b id="stampIni">♡</b><i id="stampYr"></i></div>
     <input id="evName" placeholder="Name your event" maxlength="48" aria-label="Event name">
+    <span class="caps">The Seating Chart</span>
     <div class="meter">
       <div><b id="sTotal">0</b><span class="caps">Guests</span></div>
       <div><b id="sSeated">0</b><span class="caps">Seated</span></div>
@@ -282,7 +360,7 @@ body.view-rsvp #stage,body.view-rsvp #book,body.view-rsvp #dock,body.view-rsvp #
 <div id="printArea"></div>
 <div id="viewNav" role="tablist"><button class="on" data-v="plan">Seating</button><button data-v="rsvp">RSVP</button></div>
 <section id="rsvp"><div class="rwrap">
-  <div class="rhead"><span class="caps" style="color:var(--gold)">RSVP Dashboard</span><h2 id="rEvent"></h2></div>
+  <div class="rhead" id="rHero"><img id="rCover" alt=""><div class="cbtns"><button class="btn" id="rCoverBtn">Add cover photo</button><button class="btn" id="rCoverRm" hidden>Remove</button></div><input type="file" id="coverFile" accept="image/*" hidden><span class="caps">We are getting married</span><h2 id="rEvent"></h2><div class="rsub" id="rSub"></div></div>
   <div class="rgrid" id="rStats"></div>
   <div class="rtwo">
     <div class="card"><h4 class="caps">Response rate</h4><div class="ring" id="rRing"></div></div>
@@ -361,8 +439,8 @@ body.view-rsvp #stage,body.view-rsvp #book,body.view-rsvp #dock,body.view-rsvp #
 const KEY='seatplan.v1';
 const $=s=>document.querySelector(s);
 const uid=()=>Math.random().toString(36).slice(2,9);
-const PALETTE=['#8c6a5d','#5e7466','#9a7b4f','#6b5b73','#4f6a7a','#a0605a','#7a7a52','#5b5f6b'];
-let S=load()||{event:'',theme:'ivory',guests:[],tables:[
+const PALETTE=['#7a7a4f','#b98b82','#6f8a84','#8d7a9a','#b08d4f','#a4614d','#6b7f91','#5c6b4a'];
+let S=load()||{event:'',theme:'olive',guests:[],tables:[
   {id:uid(),name:'Table 1',shape:'round',seats:8,x:500,y:200},
   {id:uid(),name:'Table 2',shape:'round',seats:8,x:860,y:200}]};
 let selected=null,selTable=null,drag=null,zoom=1,fmode='un',view='plan',rFilter='all';
@@ -382,6 +460,7 @@ function ensureGroup(name){
   const ex=groups().find(x=>x.toLowerCase()===name.toLowerCase());
   if(ex)return ex;S.groups.push(name);return name;
 }
+const THEMES=['olive','espresso','garden'],THEME_NAMES=['Olive','Espresso','Garden'];
 const MEALS=['Chicken','Beef','Fish','Vegetarian','Vegan','Kids'];
 function fillGroupSelect(sel,val){
   const gs=groups();
@@ -419,8 +498,13 @@ const unseat=g=>{g.table=null;g.seat=null};
 
 /* ---------- render ---------- */
 function render(){
-  document.documentElement.dataset.theme=S.theme||'ivory';
-  $('#themeBtn').textContent=S.theme==='noir'?'Ivory':'Noir';
+  if(!THEMES.includes(S.theme))S.theme=S.theme==='noir'?'espresso':'olive';
+  document.documentElement.dataset.theme=S.theme;
+  $('#themeBtn').textContent=THEME_NAMES[(THEMES.indexOf(S.theme)+1)%THEMES.length];
+  const words=(S.event||'').split(/\s*(?:&|\+|\band\b)\s*|\s+/).filter(Boolean);
+  $('#evName').style.fontSize=Math.max(24,Math.min(46,Math.floor(280/(Math.max((S.event||'').length,6)*.46))))+'px';
+  $('#stampIni').textContent=words.length>1?words[0][0].toUpperCase()+'&'+words[1][0].toUpperCase():words.length?words[0][0].toUpperCase():'♡';
+  $('#stampYr').textContent='EST. '+String((((S.wa&&S.wa.date)||'').match(/20\d\d/)||[new Date().getFullYear()])[0]).slice(-2);
   if(document.activeElement!==$('#evName'))$('#evName').value=S.event||'';
   const act=S.guests.filter(g=>rs(g)!=='no'),seated=act.filter(g=>g.table).length,seats=S.tables.reduce((a,t)=>a+t.seats,0);
   $('#sTotal').textContent=act.length;$('#sSeated').textContent=seated;$('#sSeats').textContent=seats;
@@ -610,7 +694,7 @@ $('#fileIn').onchange=e=>{
   f.text().then(t=>{try{const d=JSON.parse(t);if(!Array.isArray(d.guests)||!Array.isArray(d.tables))throw 0;S=d;S.groups=groups();initWa();render();toast('Plan opened')}catch(_){toast('That file is not a valid seating plan')}});
   e.target.value='';
 };
-$('#themeBtn').onclick=()=>{S.theme=S.theme==='noir'?'ivory':'noir';render()};
+$('#themeBtn').onclick=()=>{S.theme=THEMES[(THEMES.indexOf(S.theme)+1)%THEMES.length];render()};
 $('#printBtn').onclick=()=>{
   $('#printArea').innerHTML=`<h2>${esc(S.event||'Seating Chart')}</h2><div class="sub">Seating Chart</div><div class="pgrid">`+S.tables.map(t=>{
     const gs=S.guests.filter(g=>g.table===t.id).sort((a,b)=>a.seat-b.seat);
@@ -652,6 +736,10 @@ $('#viewNav').onclick=e=>{
 function renderRsvp(){
   const G=S.guests,n=G.length,c={yes:0,no:0,pending:0};G.forEach(g=>c[rs(g)]++);
   $('#rEvent').textContent=S.event||'Your Event';
+  $('#rSub').textContent=[S.wa.date,S.wa.venue].filter(Boolean).join('  |  ');
+  const hero=$('#rHero');hero.classList.toggle('has-cover',!!S.cover);
+  if(S.cover&&$('#rCover')._src!==S.cover){$('#rCover').src=S.cover;$('#rCover')._src=S.cover}
+  $('#rCoverBtn').textContent=S.cover?'Change photo':'Add cover photo';$('#rCoverRm').hidden=!S.cover;
   $('#rStats').innerHTML=[['Invited',n,'var(--ink)'],['Attending',c.yes,'var(--yes)'],['Declined',c.no,'var(--no)'],['Awaiting reply',c.pending,'var(--gold)']]
     .map(([l,v,col])=>`<div class="card stat-big"><b style="color:${col}">${v}</b><span class="caps">${l}</span></div>`).join('');
   const R=54,C=2*Math.PI*R,ya=n?c.yes/n*C:0,na=n?c.no/n*C:0,pct=n?Math.round((c.yes+c.no)/n*100):0;
@@ -688,6 +776,12 @@ $('#rsvp').addEventListener('click',e=>{
     S.groups=S.groups.filter(x=>x!==old);S.guests.forEach(g=>{if(g.group===old)g.group=''});render()}
 });
 $('#rSearch').oninput=renderRsvp;
+$('#rCoverBtn').onclick=()=>$('#coverFile').click();
+$('#rCoverRm').onclick=()=>{S.cover=null;$('#rCover')._src=null;render()};
+$('#coverFile').onchange=async e=>{
+  const f=e.target.files[0];e.target.value='';if(!f||!f.type.startsWith('image/'))return;
+  try{const i=await loadImg(await readURL(f));S.cover=shrink(i,i.naturalWidth,i.naturalHeight,1600).src;render()}catch(_){toast('Could not read that photo')}
+};
 $('#rAdd').onclick=()=>openEdit(null);
 $('#rCsv').onclick=()=>$('#csvBtn').click();
 $('#rCopy').onclick=()=>{

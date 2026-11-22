@@ -153,6 +153,10 @@ dialog textarea{height:180px;resize:vertical;line-height:1.6}
 #venue.edit{pointer-events:auto;cursor:move;outline:1px dashed var(--gold);outline-offset:3px}
 #tables{position:absolute;left:0;top:0;width:2400px;height:1600px;pointer-events:none}
 #tables .table{pointer-events:auto}
+#vHandles{position:absolute;left:0;top:0;width:0;height:0;display:none;z-index:5}
+#vHandles i{position:absolute;width:14px;height:14px;background:var(--paper);border:2px solid var(--gold);border-radius:3px;pointer-events:auto;touch-action:none;box-shadow:0 2px 5px #0005}
+#vHandles i[data-c=nw],#vHandles i[data-c=se]{cursor:nwse-resize}
+#vHandles i[data-c=ne],#vHandles i[data-c=sw]{cursor:nesw-resize}
 #venuePanel{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);width:min(360px,calc(100vw - 24px));background:var(--panel);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:20px 22px;z-index:35}
 #venuePanel[hidden]{display:none}
 #venuePanel h4{font-family:var(--serif);font-style:italic;font-weight:500;font-size:24px;margin:0 0 4px}
@@ -317,7 +321,7 @@ dialog::backdrop{background:#1b140a77}
 </head>
 <body>
 
-<section id="stage"><div id="sizer"><div id="floor"><img id="venue" alt="Venue layout" draggable="false"><div id="tables"></div></div></div></section>
+<section id="stage"><div id="sizer"><div id="floor"><img id="venue" alt="Venue layout" draggable="false"><div id="tables"></div><div id="vHandles"><i data-c="nw"></i><i data-c="ne"></i><i data-c="sw"></i><i data-c="se"></i></div></div></div></section>
 
 <aside id="book">
   <div class="mast">
@@ -372,12 +376,12 @@ dialog::backdrop{background:#1b140a77}
 </nav>
 <div id="venuePanel" hidden>
   <h4>Venue layout</h4>
-  <p>Upload your floor plan as a JPG, PNG, HEIC or PDF, then seat your tables right on top of it. You can also drop a file anywhere on the canvas.</p>
+  <p>Upload your floor plan as a JPG, PNG, HEIC or PDF, then seat your tables right on top of it. Drag the layout to move it and its corners to resize. You can also drop a file anywhere on the canvas.</p>
   <button class="btn solid" id="vUp">Upload layout</button>
   <div id="vCtl" hidden>
     <div class="vrow"><span class="caps">Opacity</span><input type="range" id="vOp" min="10" max="100"></div>
-    <div class="vrow"><span class="caps">Size</span><input type="range" id="vSize" min="400" max="3000" step="20"></div>
-    <div class="vact"><button class="btn" id="vLock">Lock position</button><button class="btn" id="vRemove">Remove</button></div>
+    <div class="vrow"><span class="caps">Size</span><input type="range" id="vSize" min="150" max="4000" step="10"></div>
+    <div class="vact"><button class="btn" id="vFit">Fit to screen</button><button class="btn" id="vLock">Lock position</button><button class="btn" id="vRemove">Remove</button></div>
   </div>
   <p class="note">Have a SketchUp file? Browsers can't open .skp. In SketchUp use File › Export › 2D Graphic (Top view, Parallel Projection) and upload that image or PDF.</p>
   <input type="file" id="vFile" accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf,.skp,image/*,application/pdf" hidden>
@@ -676,7 +680,7 @@ stage.addEventListener('pointermove',e=>{
   else{
   drag.t.x=Math.max(60,Math.round((drag.ox+(e.clientX-drag.sx)/zoom)/12)*12);
   drag.t.y=Math.max(80,Math.round((drag.oy+(e.clientY-drag.sy)/zoom)/12)*12);}
-  drag.el.style.left=drag.t.x+'px';drag.el.style.top=drag.t.y+'px';
+  drag.el.style.left=drag.t.x+'px';drag.el.style.top=drag.t.y+'px';if(drag.free)placeHandles();
 });
 stage.addEventListener('pointerup',()=>{if(drag){drag=null;save()}});
 
@@ -937,22 +941,51 @@ $('#pApply').onclick=()=>{
 };
 
 /* ---------- venue layout ---------- */
-const vImg=$('#venue');
+const vImg=$('#venue'),vH=$('#vHandles');
+function placeHandles(){
+  const v=S.venue,show=v&&!v.locked;vH.style.display=show?'block':'none';if(!show)return;
+  const z=zoom,sz=14/z,h=v.w*v.ratio,pos={nw:[v.x,v.y],ne:[v.x+v.w,v.y],sw:[v.x,v.y+h],se:[v.x+v.w,v.y+h]};
+  vH.querySelectorAll('i').forEach(el=>{const [x,y]=pos[el.dataset.c];Object.assign(el.style,{width:sz+'px',height:sz+'px',left:x-sz/2+'px',top:y-sz/2+'px',borderWidth:Math.max(1,2/z)+'px'})});
+}
+function applyVenueStyle(){
+  const v=S.venue;Object.assign(vImg.style,{left:v.x+'px',top:v.y+'px',width:v.w+'px',height:v.w*v.ratio+'px'});
+  $('#vSize').value=v.w;placeHandles();
+}
+vH.addEventListener('pointerdown',e=>{
+  const c=e.target.dataset&&e.target.dataset.c;if(!c||!S.venue)return;
+  e.preventDefault();e.stopPropagation();
+  const v=S.venue,r=v.ratio,x0=v.x,y0=v.y,w0=v.w,h0=w0*r,sx=c.includes('e')?1:-1,sy=c.includes('s')?1:-1,px=e.clientX,py=e.clientY,t=e.target;
+  t.setPointerCapture(e.pointerId);
+  const move=ev=>{
+    const dx=(ev.clientX-px)/zoom,dy=(ev.clientY-py)/zoom,a=w0+sx*dx,b=w0+sy*dy/r;
+    const w=Math.round(Math.max(150,Math.min(5000,Math.abs(a-w0)>Math.abs(b-w0)?a:b)));
+    v.w=w;v.x=sx<0?x0+w0-w:x0;v.y=sy<0?y0+h0-w*r:y0;applyVenueStyle();
+  };
+  const up=()=>{t.removeEventListener('pointermove',move);t.removeEventListener('pointerup',up);save()};
+  t.addEventListener('pointermove',move);t.addEventListener('pointerup',up);
+});
+$('#vFit').onclick=()=>{
+  const v=S.venue,st=$('#stage');if(!v)return;
+  const aw=st.clientWidth/zoom-400,ah=(st.clientHeight-130)/zoom;
+  v.w=Math.round(Math.max(150,Math.min(aw,ah/v.ratio)));v.x=Math.round((st.scrollLeft+380)/zoom);v.y=Math.round((st.scrollTop+70)/zoom);
+  applyVenueStyle();save();
+};
 function renderVenue(){
   const v=S.venue;
-  if(!v){vImg.style.display='none';vImg._src=null;$('#vCtl').hidden=true;return}
+  if(!v){vImg.style.display='none';vImg._src=null;$('#vCtl').hidden=true;vH.style.display='none';return}
   if(vImg._src!==v.src){vImg.src=v.src;vImg._src=v.src}
   Object.assign(vImg.style,{display:'block',left:v.x+'px',top:v.y+'px',width:v.w+'px',height:v.w*v.ratio+'px',opacity:v.opacity});
   vImg.classList.toggle('edit',!v.locked);
   $('#vCtl').hidden=false;$('#vOp').value=Math.round(v.opacity*100);$('#vSize').value=v.w;
   $('#vLock').textContent=v.locked?'Unlock to move':'Lock position';
+  placeHandles();
 }
 $('#venueBtn').onclick=()=>{const p=$('#venuePanel');p.hidden=!p.hidden};
 $('#vUp').onclick=()=>$('#vFile').click();
 $('#vFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)loadVenue(f)};
 $('#vOp').oninput=e=>{S.venue.opacity=e.target.value/100;vImg.style.opacity=S.venue.opacity};
 $('#vOp').onchange=save;
-$('#vSize').oninput=e=>{S.venue.w=+e.target.value;vImg.style.width=S.venue.w+'px';vImg.style.height=S.venue.w*S.venue.ratio+'px'};
+$('#vSize').oninput=e=>{S.venue.w=+e.target.value;applyVenueStyle()};
 $('#vSize').onchange=save;
 $('#vLock').onclick=()=>{S.venue.locked=!S.venue.locked;render()};
 $('#vRemove').onclick=()=>{if(confirm('Remove the venue layout?')){S.venue=null;render()}};
@@ -1009,7 +1042,7 @@ async function loadVenue(file){
   S.venue={src:r.src,x:380,y:70,w,ratio:r.h/r.w,opacity:.25,locked:false};
   if(view!=='plan')$('#viewNav [data-v=plan]').click();
   render();st.scrollTo(0,0);
-  toast(r.pages>1?`Using page 1 of ${r.pages} as a faint overlay. Drag to position it, then lock it.`:'Layout added as a faint overlay. Drag to position it, then lock it.',5500);
+  toast(r.pages>1?`Using page 1 of ${r.pages} as a faint overlay. Drag to move it, drag the corners to resize, then lock it.`:'Layout added as a faint overlay. Drag to move it, drag the corners to resize, then lock it.',6500);
 }
 render();
 })();

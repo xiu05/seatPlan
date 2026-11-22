@@ -350,7 +350,7 @@ dialog::backdrop{background:#1b140a77}
   <span class="sep"></span>
   <button class="btn" id="csvBtn">CSV</button>
   <button class="btn" id="saveBtn">Save</button>
-  <button class="btn" id="loadBtn">Open</button>
+  <button class="btn" id="loadBtn" title="Open a saved plan (.json) or a venue layout (PDF or image)">Open</button>
   <button class="btn" id="printBtn">Print</button>
   <span class="sep"></span>
   <div id="themeSw" role="group" aria-label="Colour theme">
@@ -359,7 +359,7 @@ dialog::backdrop{background:#1b140a77}
     <button data-t="sky" title="Pastel blue" aria-label="Pastel blue" style="--a:#cfdcea;--b:#f9fbfd"></button>
     <button data-t="ivory" title="Ivory" aria-label="Ivory" style="--a:#efe7d2;--b:#fffdf7"></button>
   </div>
-  <input type="file" id="fileIn" accept=".json" hidden>
+  <input type="file" id="fileIn" accept=".json,application/json,.pdf,application/pdf,image/*,.heic,.heif,.skp" hidden>
 </nav>
 <div id="venuePanel" hidden>
   <h4>Venue layout</h4>
@@ -710,9 +710,10 @@ $('#csvBtn').onclick=()=>{
 $('#saveBtn').onclick=()=>{download('seating-plan.json',JSON.stringify(S,null,1),'application/json');toast('Plan saved to a file')};
 $('#loadBtn').onclick=()=>$('#fileIn').click();
 $('#fileIn').onchange=e=>{
-  const f=e.target.files[0];if(!f)return;
-  f.text().then(t=>{try{const d=JSON.parse(t);if(!Array.isArray(d.guests)||!Array.isArray(d.tables))throw 0;S=d;S.groups=groups();initWa();render();toast('Plan opened')}catch(_){toast('That file is not a valid seating plan')}});
-  e.target.value='';
+  const f=e.target.files[0];e.target.value='';if(!f)return;
+  if(/\.json$/i.test(f.name)||f.type==='application/json')
+    f.text().then(t=>{try{const d=JSON.parse(t);if(!Array.isArray(d.guests)||!Array.isArray(d.tables))throw 0;S=d;S.groups=groups();initWa();render();toast('Plan opened')}catch(_){toast('That file is not a valid seating plan')}});
+  else loadVenue(f);
 };
 $('#themeSw').onclick=e=>{const b=e.target.closest('[data-t]');if(b){S.theme=b.dataset.t;render()}};
 $('#printBtn').onclick=()=>{
@@ -995,9 +996,11 @@ async function loadVenue(file){
     else if(file.type.startsWith('image/')||isHeic(file)){const i=await fileToImage(file);r=shrink(i,i.naturalWidth,i.naturalHeight)}
     else{toast('Please choose a JPG, PNG or PDF');return}
   }catch(err){toast(err.message==='pdfjs'?'PDF support needs an internet connection the first time. Try a JPG, or reconnect.':err.message==='heic'?HEIC_MSG:'Could not read that file',6000);return}
-  const w=Math.min(r.w,1100);
-  S.venue={src:r.src,x:420,y:60,w,ratio:r.h/r.w,opacity:.6,locked:false};
-  render();toast(r.pages>1?`Using page 1 of ${r.pages}. Drag the layout to position it, then lock it.`:'Layout added. Drag it to position it, then lock it.',5000);
+  const st=$('#stage'),w=Math.round(Math.min(r.w,Math.max(600,st.clientWidth/zoom-400)));
+  S.venue={src:r.src,x:380,y:70,w,ratio:r.h/r.w,opacity:.25,locked:false};
+  if(view!=='plan')$('#viewNav [data-v=plan]').click();
+  render();st.scrollTo(0,0);
+  toast(r.pages>1?`Using page 1 of ${r.pages} as a faint overlay. Drag to position it, then lock it.`:'Layout added as a faint overlay. Drag to position it, then lock it.',5500);
 }
 render();
 })();

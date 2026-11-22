@@ -15,20 +15,26 @@
   --solid:#2b2119;--solid-ink:#f3ebd7;--stagebg:#7b7d57;--vig:#43452b;--seat-line:#efe6cf;--seat-ink:#efe6cf;--hint:#efe6cfd0;
   --hero:#f6eed8;--herobg:linear-gradient(135deg,#8a8c63,#686a46);--halo:#7b7d57;--grain:.4;
 }
-:root[data-theme="forest"]{
-  --bg:#f4f8f3;--bg2:#e6eee6;--panel:#fcfdfb;--paper:#ffffff;--ink:#1f3328;--mute:#5d7266;--line:#dae4db;
-  --gold:#3f7656;--gold-soft:#3f765638;--warn:#b5604f;--shadow:0 1px 2px #0f1f1633,0 18px 44px -14px #0f1f168a;
-  --table:#ffffff;--dot:#587a66;--yes:#3f7a54;--no:#b5604f;
-  --solid:#2f5d46;--solid-ink:#ffffff;--stagebg:#3a5a48;--vig:#1c3226;--seat-line:#e7f0e9;--seat-ink:#e7f0e9;--hint:#dbe8de;
-  --hero:#ffffff;--herobg:linear-gradient(135deg,#4d7360,#2b4637);--halo:#3a5a48;--grain:.35;
+:root[data-theme="peach"]{
+  --bg:#fff1e6;--bg2:#f7dfcf;--panel:#fff6ee;--paper:#fffaf5;--ink:#4a2f26;--mute:#8a6a5c;--line:#efd7c6;
+  --gold:#c0714f;--gold-soft:#c0714f36;--warn:#b5503f;--shadow:0 1px 2px #5a2d1a22,0 18px 44px -14px #5a2d1a66;
+  --table:#fffaf5;--dot:#e3a98a;--yes:#5e7f58;--no:#b5503f;
+  --solid:#b8664a;--solid-ink:#fffaf5;--stagebg:#f0c4a9;--vig:#cf936f;--seat-line:#fff6ee;--seat-ink:#fff6ee;--hint:#7a4c3a;
+  --hero:#fff6ee;--herobg:linear-gradient(135deg,#f2b898,#d78d69);--halo:#f0c4a9;--grain:.3;
 }
-:root[data-theme="garden"]{
-  --bg:#f6f1e1;--bg2:#ebe4cf;--panel:#fbf7ea;--paper:#fffcf3;--ink:#3b3340;--mute:#7a7080;--line:#e1d9c3;
-  --gold:#8b789f;--gold-soft:#8b789f38;--warn:#b5604f;--shadow:0 1px 2px #3b334014,0 18px 44px -14px #3b334055;
-  --table:#fffcf3;--dot:#b4bfa5;--yes:#5f8062;--no:#b5604f;
-  --solid:#6d5f80;--solid-ink:#fffcf3;--stagebg:#c8d2b9;--vig:#8c9a7e;--seat-line:#fffcf3;--seat-ink:#6d6574;--hint:#56654f;
-  --hero:#3b3340;--herobg:linear-gradient(135deg,#dccad6,#bccbbd 55%,#c9d3bb);--halo:#c8d2b9;--grain:.28;
-  --wash:radial-gradient(700px 500px at 15% 15%,#ecc9c4aa,transparent 70%),radial-gradient(800px 600px at 90% 75%,#b8aed1aa,transparent 70%),radial-gradient(900px 500px at 55% 0%,#a8c4bdaa,transparent 70%);
+:root[data-theme="sky"]{
+  --bg:#f3f7fb;--bg2:#e3ebf4;--panel:#f9fbfd;--paper:#ffffff;--ink:#2c3a4d;--mute:#64758c;--line:#dce5ef;
+  --gold:#6f8fb5;--gold-soft:#6f8fb538;--warn:#b5604f;--shadow:0 1px 2px #2c3a4d14,0 18px 44px -14px #2c3a4d55;
+  --table:#ffffff;--dot:#aebfd4;--yes:#4f8068;--no:#b5604f;
+  --solid:#4f6f96;--solid-ink:#ffffff;--stagebg:#cfdcea;--vig:#9db3cb;--seat-line:#ffffff;--seat-ink:#566a83;--hint:#4c6280;
+  --hero:#2c3a4d;--herobg:linear-gradient(135deg,#e4edf6,#b9cde2);--halo:#cfdcea;--grain:.28;
+}
+:root[data-theme="ivory"]{
+  --bg:#faf6ec;--bg2:#efe8d6;--panel:#fffdf7;--paper:#ffffff;--ink:#2f2a24;--mute:#857b6b;--line:#e8e0cd;
+  --gold:#a98a4b;--gold-soft:#a98a4b36;--warn:#a4543f;--shadow:0 1px 2px #2f2a2418,0 18px 44px -14px #2f2a2450;
+  --table:#ffffff;--dot:#d8cfba;--yes:#5e7a55;--no:#a4543f;
+  --solid:#2f2a24;--solid-ink:#fffdf7;--stagebg:#f3eee2;--vig:#d6cbb2;--seat-line:#b3a78f;--seat-ink:#8c8068;--hint:#8c8068;
+  --hero:#2f2a24;--herobg:linear-gradient(135deg,#f9f4e7,#e6dec8);--halo:#f3eee2;--grain:.28;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
@@ -268,6 +274,12 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:60;opa
 .seat:hover{border-color:var(--paper);color:var(--paper);background:#ffffff22}
 .seat.full{border:2px solid var(--paper);color:#fffaf0;opacity:1}
 
+#themeSw{display:flex;gap:7px;padding:0 8px 0 6px}
+#themeSw button{width:22px;height:22px;border-radius:50%;border:1px solid #00000030;cursor:pointer;padding:0;background:linear-gradient(135deg,var(--a) 50%,var(--b) 50%);transition:transform .15s,box-shadow .15s}
+#themeSw button:hover{transform:scale(1.12)}
+#themeSw button.on{box-shadow:0 0 0 2px var(--panel),0 0 0 3.5px var(--ink)}
+.seat:hover{border-color:var(--ink);color:var(--ink)}
+
 /* RSVP hero & cards */
 .rhead{position:relative;overflow:hidden;border-radius:6px;padding:74px 24px 64px;margin-bottom:22px;background:var(--herobg);box-shadow:var(--shadow);border:1px solid #ffffff22}
 .rhead>*{position:relative;z-index:1}
@@ -341,12 +353,17 @@ dialog::backdrop{background:#1b140a77}
   <button class="btn" id="loadBtn">Open</button>
   <button class="btn" id="printBtn">Print</button>
   <span class="sep"></span>
-  <button class="btn" id="themeBtn" title="Switch theme">Noir</button>
+  <div id="themeSw" role="group" aria-label="Colour theme">
+    <button data-t="peach" title="Peach" aria-label="Peach" style="--a:#f0c4a9;--b:#fff6ee"></button>
+    <button data-t="olive" title="Olive" aria-label="Olive" style="--a:#7b7d57;--b:#f3ebd7"></button>
+    <button data-t="sky" title="Pastel blue" aria-label="Pastel blue" style="--a:#cfdcea;--b:#f9fbfd"></button>
+    <button data-t="ivory" title="Ivory" aria-label="Ivory" style="--a:#efe7d2;--b:#fffdf7"></button>
+  </div>
   <input type="file" id="fileIn" accept=".json" hidden>
 </nav>
 <div id="venuePanel" hidden>
   <h4>Venue layout</h4>
-  <p>Upload your floor plan as a JPG, PNG or PDF, then seat your tables right on top of it. You can also drop a file anywhere on the canvas.</p>
+  <p>Upload your floor plan as a JPG, PNG, HEIC or PDF, then seat your tables right on top of it. You can also drop a file anywhere on the canvas.</p>
   <button class="btn solid" id="vUp">Upload layout</button>
   <div id="vCtl" hidden>
     <div class="vrow"><span class="caps">Opacity</span><input type="range" id="vOp" min="10" max="100"></div>
@@ -354,13 +371,13 @@ dialog::backdrop{background:#1b140a77}
     <div class="vact"><button class="btn" id="vLock">Lock position</button><button class="btn" id="vRemove">Remove</button></div>
   </div>
   <p class="note">Have a SketchUp file? Browsers can't open .skp. In SketchUp use File › Export › 2D Graphic (Top view, Parallel Projection) and upload that image or PDF.</p>
-  <input type="file" id="vFile" accept=".jpg,.jpeg,.png,.webp,.pdf,.skp,image/*,application/pdf" hidden>
+  <input type="file" id="vFile" accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf,.skp,image/*,application/pdf" hidden>
 </div>
 <div id="toast"></div>
 <div id="printArea"></div>
 <div id="viewNav" role="tablist"><button class="on" data-v="plan">Seating</button><button data-v="rsvp">RSVP</button></div>
 <section id="rsvp"><div class="rwrap">
-  <div class="rhead" id="rHero"><img id="rCover" alt=""><div class="cbtns"><button class="btn" id="rCoverBtn">Add cover photo</button><button class="btn" id="rCoverRm" hidden>Remove</button></div><input type="file" id="coverFile" accept="image/*" hidden><span class="caps">We are getting married</span><h2 id="rEvent"></h2><div class="rsub" id="rSub"></div></div>
+  <div class="rhead" id="rHero"><img id="rCover" alt=""><div class="cbtns"><button class="btn" id="rCoverBtn">Add cover photo</button><button class="btn" id="rCoverRm" hidden>Remove</button></div><input type="file" id="coverFile" accept="image/*,.heic,.heif" hidden><span class="caps">We are getting married</span><h2 id="rEvent"></h2><div class="rsub" id="rSub"></div></div>
   <div class="rgrid" id="rStats"></div>
   <div class="rtwo">
     <div class="card"><h4 class="caps">Response rate</h4><div class="ring" id="rRing"></div></div>
@@ -405,6 +422,9 @@ dialog::backdrop{background:#1b140a77}
 <dialog id="waDlg">
   <h3>WhatsApp invitations</h3>
   <p>Each message opens in WhatsApp with the text ready, and you press send. Replies come back to WhatsApp, so paste them into <b>Paste replies</b> to update your RSVPs.</p>
+  <div class="fl" style="margin-bottom:14px"><span class="caps">Open messages in</span>
+    <div class="seg" id="wMode"><button type="button" data-m="app">Desktop app</button><button type="button" data-m="web">WhatsApp Web</button><button type="button" data-m="auto">Browser link</button></div>
+    <span class="muted" id="wModeNote" style="margin-top:2px"></span></div>
   <div class="egrid">
     <label class="fl"><span class="caps">Default country code</span><input class="field" id="wCc" placeholder="e.g. 44" inputmode="numeric"></label>
     <label class="fl"><span class="caps">Event date</span><input class="field" id="wDate" placeholder="Saturday 14 June 2027"></label>
@@ -452,7 +472,7 @@ const gById=id=>S.guests.find(g=>g.id===id);
 const groups=()=>[...new Set([...(S.groups||[]),...S.guests.map(g=>g.group).filter(Boolean)])];
 const DEF_INVITE="Hi {name}! We'd love you to join us for {event} on {date} at {venue}. Can you make it? Please reply YES or NO, plus your meal choice (Chicken, Beef, Fish, Vegetarian or Vegan). Thank you! 💛";
 const DEF_REMIND="Hi {name}, a gentle reminder to let us know if you can join us for {event} on {date}. Just reply YES or NO. Thank you! 💛";
-function initWa(){S.wa=Object.assign({cc:'',date:'',venue:'',invite:DEF_INVITE,remind:DEF_REMIND},S.wa||{})}
+function initWa(){S.wa=Object.assign({cc:'',date:'',venue:'',mode:'app',invite:DEF_INVITE,remind:DEF_REMIND},S.wa||{})}
 S.groups=groups();initWa();
 const rs=g=>g.rsvp||'pending';
 function ensureGroup(name){
@@ -460,7 +480,7 @@ function ensureGroup(name){
   const ex=groups().find(x=>x.toLowerCase()===name.toLowerCase());
   if(ex)return ex;S.groups.push(name);return name;
 }
-const THEMES=['olive','forest','garden'],THEME_NAMES=['Olive','Green & White','Garden'];
+const THEMES=['peach','olive','sky','ivory'];
 const MEALS=['Chicken','Beef','Fish','Vegetarian','Vegan','Kids'];
 function fillGroupSelect(sel,val){
   const gs=groups();
@@ -498,9 +518,9 @@ const unseat=g=>{g.table=null;g.seat=null};
 
 /* ---------- render ---------- */
 function render(){
-  if(!THEMES.includes(S.theme))S.theme=(S.theme==='noir'||S.theme==='espresso')?'forest':'olive';
+  if(!THEMES.includes(S.theme))S.theme=S.theme==='garden'?'sky':'olive';
   document.documentElement.dataset.theme=S.theme;
-  $('#themeBtn').textContent=THEME_NAMES[(THEMES.indexOf(S.theme)+1)%THEMES.length];
+  document.querySelectorAll('#themeSw button').forEach(b=>b.classList.toggle('on',b.dataset.t===S.theme));
   const words=(S.event||'').split(/\s*(?:&|\+|\band\b)\s*|\s+/).filter(Boolean);
   $('#evName').style.fontSize=Math.max(24,Math.min(46,Math.floor(280/(Math.max((S.event||'').length,6)*.46))))+'px';
   $('#stampIni').textContent=words.length>1?words[0][0].toUpperCase()+'&'+words[1][0].toUpperCase():words.length?words[0][0].toUpperCase():'♡';
@@ -694,7 +714,7 @@ $('#fileIn').onchange=e=>{
   f.text().then(t=>{try{const d=JSON.parse(t);if(!Array.isArray(d.guests)||!Array.isArray(d.tables))throw 0;S=d;S.groups=groups();initWa();render();toast('Plan opened')}catch(_){toast('That file is not a valid seating plan')}});
   e.target.value='';
 };
-$('#themeBtn').onclick=()=>{S.theme=THEMES[(THEMES.indexOf(S.theme)+1)%THEMES.length];render()};
+$('#themeSw').onclick=e=>{const b=e.target.closest('[data-t]');if(b){S.theme=b.dataset.t;render()}};
 $('#printBtn').onclick=()=>{
   $('#printArea').innerHTML=`<h2>${esc(S.event||'Seating Chart')}</h2><div class="sub">Seating Chart</div><div class="pgrid">`+S.tables.map(t=>{
     const gs=S.guests.filter(g=>g.table===t.id).sort((a,b)=>a.seat-b.seat);
@@ -779,8 +799,9 @@ $('#rSearch').oninput=renderRsvp;
 $('#rCoverBtn').onclick=()=>$('#coverFile').click();
 $('#rCoverRm').onclick=()=>{S.cover=null;$('#rCover')._src=null;render()};
 $('#coverFile').onchange=async e=>{
-  const f=e.target.files[0];e.target.value='';if(!f||!f.type.startsWith('image/'))return;
-  try{const i=await loadImg(await readURL(f));S.cover=shrink(i,i.naturalWidth,i.naturalHeight,1600).src;render()}catch(_){toast('Could not read that photo')}
+  const f=e.target.files[0];e.target.value='';if(!f||!(f.type.startsWith('image/')||isHeic(f))){if(f)toast('Please choose a photo (JPG, PNG or HEIC)');return}
+  try{if(isHeic(f))toast('Converting your photo…',15000);const i=await fileToImage(f);S.cover=shrink(i,i.naturalWidth,i.naturalHeight,1600).src;render();if(isHeic(f))toast('Cover photo added')}
+  catch(err){toast(err.message==='heic'?HEIC_MSG:'Could not read that photo',6000)}
 };
 $('#rAdd').onclick=()=>openEdit(null);
 $('#rCsv').onclick=()=>$('#csvBtn').click();
@@ -813,10 +834,25 @@ function waText(g){
   if(!w.venue)t=t.replace(/\s*\bat \{venue\}/g,'').replace(/\{venue\}/g,'');
   return t.replace(/\{name\}/g,g.name.split(' ')[0]).replace(/\{event\}/g,S.event||'our wedding').replace(/\{date\}/g,w.date).replace(/\{venue\}/g,w.venue);
 }
+function waUrl(num,text){
+  const q=`phone=${num}&text=${encodeURIComponent(text)}`,m=S.wa.mode;
+  if(m==='app')return `whatsapp://send?${q}`;
+  if(m==='web')return `https://web.whatsapp.com/send?${q}`;
+  return `https://wa.me/${num}?text=${encodeURIComponent(text)}`;
+}
+let appHinted=false;
+function launchApp(url){
+  const a=document.createElement('a');a.href=url;a.dataset.wa='1';a.style.display='none';document.body.appendChild(a);
+  let left=false;const onBlur=()=>{left=true};window.addEventListener('blur',onBlur,{once:true});
+  a.click();a.remove();
+  setTimeout(()=>{window.removeEventListener('blur',onBlur);
+    if(!left&&!appHinted){appHinted=true;toast('If the WhatsApp app didn\'t open, install WhatsApp Desktop or set “Open messages in” to WhatsApp Web.',8000)}},1800);
+}
 function sendWa(id){
   const g=gById(id);if(!g)return;const num=waNumber(g);
   if(!num){toast('Add a WhatsApp number first');openEdit(id);return}
-  window.open(`https://wa.me/${num}?text=${encodeURIComponent(waText(g))}`,'_blank','noopener');
+  const url=waUrl(num,waText(g));
+  if(S.wa.mode==='app')launchApp(url);else window.open(url,'_blank','noopener');
   g.sent=(g.sent||0)+1;g.sentAt=Date.now();render();
 }
 function renderWaQueue(){
@@ -827,9 +863,12 @@ function renderWaQueue(){
     return `<div class="qrow"><span class="qn">${esc(g.name)}</span><span class="muted">${has?(g.sent?`sent ${g.sent}× · ${ago(g.sentAt)}`:'not yet messaged'):'no number'}</span>${has?`<button class="btn wa" type="button" data-wa="${g.id}">${g.sent?'Remind':'Send invite'}</button>`:`<button class="btn ghost" type="button" data-edit="${g.id}">＋ Number</button>`}</div>`}).join('')||'<p class="muted">Nobody is awaiting a reply.</p>';
   $('#wPrev').textContent=waText({name:'Alex',sent:0});
 }
+const MODE_NOTE={app:'Opens the WhatsApp app on your laptop (or phone). Your browser may ask permission the first time.',web:'Opens web.whatsapp.com in a new tab. You need to be signed in there.',auto:'Opens a wa.me link, which then offers the app or WhatsApp Web.'};
+function syncMode(){document.querySelectorAll('#wMode button').forEach(b=>b.classList.toggle('on',b.dataset.m===S.wa.mode));$('#wModeNote').textContent=MODE_NOTE[S.wa.mode]}
+$('#wMode').onclick=e=>{const b=e.target.closest('[data-m]');if(b){S.wa.mode=b.dataset.m;save();syncMode()}};
 function openWa(){
   $('#wCc').value=S.wa.cc;$('#wDate').value=S.wa.date;$('#wVenue').value=S.wa.venue;$('#wInvite').value=S.wa.invite;$('#wRemind').value=S.wa.remind;
-  renderWaQueue();waDlg.showModal();
+  syncMode();renderWaQueue();waDlg.showModal();
 }
 [['#wCc','cc'],['#wDate','date'],['#wVenue','venue'],['#wInvite','invite'],['#wRemind','remind']].forEach(([id,k])=>{
   $(id).addEventListener('input',e=>{S.wa[k]=e.target.value;save();renderWaQueue()});
@@ -909,6 +948,20 @@ $('#vLock').onclick=()=>{S.venue.locked=!S.venue.locked;render()};
 $('#vRemove').onclick=()=>{if(confirm('Remove the venue layout?')){S.venue=null;render()}};
 document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#venuePanel').hidden=true});
 
+let heicReady;
+function loadHeic(){return heicReady||(heicReady=new Promise((res,rej)=>{
+  const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js';
+  sc.onload=()=>res(window.heic2any);sc.onerror=()=>{heicReady=null;rej(new Error('heic'))};document.head.appendChild(sc)}))}
+const isHeic=f=>/image\/hei[cf]/i.test(f.type)||/\.hei[cf]$/i.test(f.name);
+async function fileToImage(f){
+  if(isHeic(f)){
+    try{return await loadImg(await readURL(f))}catch(_){}   /* Safari can decode HEIC itself */
+    const h=await loadHeic();let out=await h({blob:f,toType:'image/jpeg',quality:.85});if(Array.isArray(out))out=out[0];
+    return loadImg(await readURL(out));
+  }
+  return loadImg(await readURL(f));
+}
+const HEIC_MSG='Converting HEIC needs an internet connection the first time. Try a JPG, or reconnect.';
 const readURL=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(f)});
 const loadImg=src=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=src});
 function shrink(source,w,h,max=2400){
@@ -939,9 +992,9 @@ async function loadVenue(file){
   try{
     toast('Reading your layout…',20000);
     if(file.type==='application/pdf'||n.endsWith('.pdf'))r=await pdfToImage(file);
-    else if(file.type.startsWith('image/')){const i=await loadImg(await readURL(file));r=shrink(i,i.naturalWidth,i.naturalHeight)}
+    else if(file.type.startsWith('image/')||isHeic(file)){const i=await fileToImage(file);r=shrink(i,i.naturalWidth,i.naturalHeight)}
     else{toast('Please choose a JPG, PNG or PDF');return}
-  }catch(err){toast(err.message==='pdfjs'?'PDF support needs an internet connection the first time. Try a JPG, or reconnect.':'Could not read that file',6000);return}
+  }catch(err){toast(err.message==='pdfjs'?'PDF support needs an internet connection the first time. Try a JPG, or reconnect.':err.message==='heic'?HEIC_MSG:'Could not read that file',6000);return}
   const w=Math.min(r.w,1100);
   S.venue={src:r.src,x:420,y:60,w,ratio:r.h/r.w,opacity:.6,locked:false};
   render();toast(r.pages>1?`Using page 1 of ${r.pages}. Drag the layout to position it, then lock it.`:'Layout added. Drag it to position it, then lock it.',5000);

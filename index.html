@@ -190,7 +190,13 @@ body.view-rsvp #stage,body.view-rsvp #book,body.view-rsvp #dock,body.view-rsvp #
 .rs button.on.yes{background:var(--yes)!important;color:#fff!important}
 .rs button.on.no{background:var(--no)!important;color:#fff!important}
 .rs button.on.pending{background:var(--gold)!important;color:#fff!important}
-@media(max-width:900px){.rgrid{grid-template-columns:1fr 1fr}.rtwo{grid-template-columns:1fr}.rrow{grid-template-columns:1fr auto auto}.rrow .hm{display:none}#rsvp{padding:84px 14px 60px}#book{top:64px!important}#stage{top:calc(64px + 46vh + 12px)!important}}
+@media(max-width:900px){.rgrid{grid-template-columns:1fr 1fr}.rtwo{grid-template-columns:1fr}.rrow{grid-template-columns:1fr auto}.rrow .hm{display:none}.rrow.h{display:none}#rsvp{padding:84px 14px 60px}#book{top:64px!important}#stage{top:calc(64px + 46vh + 12px)!important}}
+#waDlg,#repDlg{width:min(660px,94vw);max-height:90vh;overflow:auto}
+.btn.wa{border-color:#25d36677}.btn.wa::before{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;background:#25d366;margin-right:8px}
+.qrow{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+.qn{font-family:var(--serif);font-size:19px}
+.sech{margin:20px 0 6px}
+.bubble{background:var(--bg2);border:1px solid var(--line);border-radius:14px 14px 14px 4px;padding:12px 14px;font-size:13px;line-height:1.5;white-space:pre-wrap;margin-top:8px}
 @media print{#viewNav,#rsvp{display:none!important}}
 @media print{
   html,body{height:auto;overflow:visible;background:#fff;color:#000}
@@ -288,12 +294,14 @@ body.view-rsvp #stage,body.view-rsvp #book,body.view-rsvp #dock,body.view-rsvp #
       <div class="seg" id="rFilter"><button data-rf="all" class="on">All</button><button data-rf="pending">Awaiting</button><button data-rf="yes">Attending</button><button data-rf="no">Declined</button></div>
       <input class="field" id="rSearch" placeholder="Search guests…">
       <span class="sp"></span>
+      <button class="btn wa" id="rWa">WhatsApp</button>
+      <button class="btn" id="rRep">Paste replies</button>
       <button class="btn" id="rMail">Email awaiting</button>
       <button class="btn" id="rCopy">Copy reminder list</button>
       <button class="btn" id="rCsv">Export CSV</button>
       <button class="btn solid" id="rAdd">＋ Add guest</button>
     </div>
-    <div class="rrow h"><span class="caps">Guest</span><span class="caps">Group</span><span class="caps hm">Meal</span><span class="caps hm">Email</span><span class="caps">Reply</span><span></span></div>
+    <div class="rrow h"><span class="caps">Guest</span><span class="caps">Group</span><span class="caps hm">Meal</span><span class="caps">WhatsApp</span><span class="caps">Reply</span><span></span></div>
     <div id="rRows"></div>
   </div>
 </div></section>
@@ -307,18 +315,42 @@ body.view-rsvp #stage,body.view-rsvp #book,body.view-rsvp #dock,body.view-rsvp #
       <label class="fl"><span class="caps">Group</span><select class="field" id="eGroup"></select></label>
       <label class="fl"><span class="caps">Meal</span><select class="field" id="eMeal"></select></label>
       <input class="field full" id="eGroupNew" placeholder="Name your new group, then press Enter" hidden>
-      <label class="fl"><span class="caps">RSVP</span><select class="field" id="eRsvp"><option value="pending">Awaiting reply</option><option value="yes">Attending</option><option value="no">Declined</option></select></label>
+      <label class="fl"><span class="caps">WhatsApp number</span><input class="field" id="ePhone" type="tel" placeholder="+44 7700 900123" autocomplete="off"></label>
       <label class="fl"><span class="caps">Email</span><input class="field" id="eEmail" type="email" autocomplete="off"></label>
+      <label class="fl full"><span class="caps">RSVP</span><select class="field" id="eRsvp"><option value="pending">Awaiting reply</option><option value="yes">Attending</option><option value="no">Declined</option></select></label>
       <label class="fl full"><span class="caps">Notes</span><textarea class="field" id="eNotes" placeholder="Allergies, plus-one, anything to remember…"></textarea></label>
     </div>
     <div class="dact"><button class="btn del" type="button" id="eDelete">Remove guest</button><button class="btn" type="button" id="eCancel">Cancel</button><button class="btn solid" type="submit">Save</button></div>
   </form>
 </dialog>
 
+<dialog id="waDlg">
+  <h3>WhatsApp invitations</h3>
+  <p>Each message opens in WhatsApp with the text ready, and you press send. Replies come back to WhatsApp, so paste them into <b>Paste replies</b> to update your RSVPs.</p>
+  <div class="egrid">
+    <label class="fl"><span class="caps">Default country code</span><input class="field" id="wCc" placeholder="e.g. 44" inputmode="numeric"></label>
+    <label class="fl"><span class="caps">Event date</span><input class="field" id="wDate" placeholder="Saturday 14 June 2027"></label>
+    <label class="fl full"><span class="caps">Venue</span><input class="field" id="wVenue" placeholder="The Orangery, Kew"></label>
+    <label class="fl full"><span class="caps">Invitation message</span><textarea class="field" id="wInvite"></textarea></label>
+    <label class="fl full"><span class="caps">Reminder message</span><textarea class="field" id="wRemind"></textarea></label>
+  </div>
+  <p class="muted" style="margin:8px 0 0">Use {name} {event} {date} {venue}. The event name is the one in your guest book header.</p>
+  <div class="bubble" id="wPrev"></div>
+  <div class="sech caps">Awaiting reply · <span id="wCount"></span></div>
+  <div id="wQueue"></div>
+  <div class="dact"><button class="btn solid" type="button" id="wClose">Done</button></div>
+</dialog>
+<dialog id="repDlg">
+  <h3>Paste replies</h3>
+  <p>Copy messages from your WhatsApp chats (or a group) and paste them here. I'll match senders to guests by name or number and spot yes / no answers and meal choices. You review before anything changes.</p>
+  <textarea class="field" id="pText" style="height:150px" placeholder="Jane Smith: Yes, we'd love to come! Fish please&#10;[12:41, 3/5/2027] Tom Lee: Sorry, can't make it"></textarea>
+  <div id="pList" style="margin-top:12px"></div>
+  <div class="dact"><button class="btn" type="button" id="pClose">Close</button><button class="btn" type="button" id="pRev">Review</button><button class="btn solid" type="button" id="pApply" hidden>Apply</button></div>
+</dialog>
 <dialog id="bulkDlg">
   <form method="dialog">
     <h3>Import your guest list</h3>
-    <p>One guest per line. Optionally add a group and a meal: <em>Name, Group, Meal</em></p>
+    <p>One guest per line. Optionally add a group, meal and WhatsApp number: <em>Name, Group, Meal, Phone</em></p>
     <textarea class="field" id="bulkTxt" placeholder="Jane Smith, Bride's family, Chicken&#10;Tom Lee, Friends&#10;Ana Cruz, Friends, Vegan"></textarea>
     <div class="dact"><button class="btn" value="cancel">Cancel</button><button class="btn solid" value="ok" id="bulkOk">Import</button></div>
   </form>
@@ -340,7 +372,10 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const gById=id=>S.guests.find(g=>g.id===id);
 const groups=()=>[...new Set([...(S.groups||[]),...S.guests.map(g=>g.group).filter(Boolean)])];
-S.groups=groups();
+const DEF_INVITE="Hi {name}! We'd love you to join us for {event} on {date} at {venue}. Can you make it? Please reply YES or NO, plus your meal choice (Chicken, Beef, Fish, Vegetarian or Vegan). Thank you! 💛";
+const DEF_REMIND="Hi {name}, a gentle reminder to let us know if you can join us for {event} on {date}. Just reply YES or NO. Thank you! 💛";
+function initWa(){S.wa=Object.assign({cc:'',date:'',venue:'',invite:DEF_INVITE,remind:DEF_REMIND},S.wa||{})}
+S.groups=groups();initWa();
 const rs=g=>g.rsvp||'pending';
 function ensureGroup(name){
   name=(name||'').trim();if(!name||name==='__new')return '';
@@ -392,7 +427,7 @@ function render(){
   $('#barFill').style.width=(act.length?seated/act.length*100:0)+'%';
   fillGroupSelect($('#gGroup'),$('#gGroup').value);
   $('#hint').style.opacity=S.guests.length?0:1;
-  renderGuests();renderFloor();renderVenue();applyZoom();if(view==='rsvp')renderRsvp();save();
+  renderGuests();renderFloor();renderVenue();applyZoom();if(view==='rsvp')renderRsvp();if(typeof waDlg!=='undefined'&&waDlg.open)renderWaQueue();save();
 }
 
 function renderGuests(){
@@ -532,7 +567,7 @@ stage.addEventListener('pointermove',e=>{
 });
 stage.addEventListener('pointerup',()=>{if(drag){drag=null;save()}});
 
-function addGuest(name,group,meal){name=name.trim();if(!name)return false;S.guests.push({id:uid(),name,group:ensureGroup(group),meal:meal||'',rsvp:'pending',email:'',notes:'',table:null,seat:null});return true}
+function addGuest(name,group,meal,phone){name=name.trim();if(!name)return false;S.guests.push({id:uid(),name,group:ensureGroup(group),meal:meal||'',rsvp:'pending',email:'',phone:(phone||'').trim(),notes:'',table:null,seat:null});return true}
 bindGroup($('#gGroup'),$('#gGroupNew'),render);
 $('#gAdd').onclick=()=>{commitGroup($('#gGroup'),$('#gGroupNew'));if(addGuest($('#gName').value,$('#gGroup').value,$('#gMeal').value)){$('#gName').value='';render()}$('#gName').focus()};
 $('#gName').onkeydown=e=>{if(e.key==='Enter')$('#gAdd').click()};
@@ -541,7 +576,7 @@ $('#filter').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;fmode
 $('#evName').oninput=e=>{S.event=e.target.value;save()};
 $('#bulkBtn').onclick=()=>$('#bulkDlg').showModal();
 $('#bulkOk').onclick=()=>{
-  let n=0;$('#bulkTxt').value.split('\n').forEach(l=>{const [a,g,m]=l.split(',').map(s=>s.trim());if(addGuest(a||'',g,m))n++});
+  let n=0;$('#bulkTxt').value.split('\n').forEach(l=>{const [a,g,m,ph]=l.split(',').map(s=>s.trim());if(addGuest(a||'',g,m,ph))n++});
   $('#bulkTxt').value='';if(n){render();toast(`${n} guest${n>1?'s':''} imported`)}
 };
 function addTable(shape){
@@ -565,14 +600,14 @@ $('#autoBtn').onclick=()=>{
 const download=(name,text,type)=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
 $('#csvBtn').onclick=()=>{
   const q=v=>`"${String(v||'').replace(/"/g,'""')}"`;
-  const rows=[['Name','Group','Meal','RSVP','Email','Notes','Table','Seat']].concat(S.guests.map(g=>{const t=tableById(g.table);return [g.name,g.group,g.meal,RS[rs(g)],g.email,g.notes,t?t.name:'',g.seat!=null?g.seat+1:'']}));
+  const rows=[['Name','Group','Meal','RSVP','Phone','Email','Notes','Table','Seat']].concat(S.guests.map(g=>{const t=tableById(g.table);return [g.name,g.group,g.meal,RS[rs(g)],g.phone,g.email,g.notes,t?t.name:'',g.seat!=null?g.seat+1:'']}));
   download('seating-chart.csv',rows.map(r=>r.map(q).join(',')).join('\n'),'text/csv');toast('Guest list exported');
 };
 $('#saveBtn').onclick=()=>{download('seating-plan.json',JSON.stringify(S,null,1),'application/json');toast('Plan saved to a file')};
 $('#loadBtn').onclick=()=>$('#fileIn').click();
 $('#fileIn').onchange=e=>{
   const f=e.target.files[0];if(!f)return;
-  f.text().then(t=>{try{const d=JSON.parse(t);if(!Array.isArray(d.guests)||!Array.isArray(d.tables))throw 0;S=d;S.groups=groups();render();toast('Plan opened')}catch(_){toast('That file is not a valid seating plan')}});
+  f.text().then(t=>{try{const d=JSON.parse(t);if(!Array.isArray(d.guests)||!Array.isArray(d.tables))throw 0;S=d;S.groups=groups();initWa();render();toast('Plan opened')}catch(_){toast('That file is not a valid seating plan')}});
   e.target.value='';
 };
 $('#themeBtn').onclick=()=>{S.theme=S.theme==='noir'?'ivory':'noir';render()};
@@ -591,15 +626,15 @@ const eDlg=$('#editDlg');let editing=null;
 bindGroup($('#eGroup'),$('#eGroupNew'));
 function openEdit(id){
   editing=id?gById(id):null;
-  const g=editing||{name:'',group:'',meal:'',rsvp:'pending',email:'',notes:''};
+  const g=editing||{name:'',group:'',meal:'',rsvp:'pending',email:'',phone:'',notes:''};
   $('#editTitle').textContent=editing?'Edit guest':'Add a guest';
   $('#eName').value=g.name;fillGroupSelect($('#eGroup'),g.group||'');$('#eGroupNew').hidden=true;$('#eGroupNew').value='';
-  fillMeal($('#eMeal'),g.meal);$('#eRsvp').value=rs(g);$('#eEmail').value=g.email||'';$('#eNotes').value=g.notes||'';
+  fillMeal($('#eMeal'),g.meal);$('#eRsvp').value=rs(g);$('#eEmail').value=g.email||'';$('#ePhone').value=g.phone||'';$('#eNotes').value=g.notes||'';
   $('#eDelete').hidden=!editing;eDlg.showModal();$('#eName').focus();
 }
 $('#editForm').addEventListener('submit',e=>{
   e.preventDefault();commitGroup($('#eGroup'),$('#eGroupNew'));
-  const gv=$('#eGroup').value,v={name:$('#eName').value.trim(),group:gv==='__new'?'':gv,meal:$('#eMeal').value,rsvp:$('#eRsvp').value,email:$('#eEmail').value.trim(),notes:$('#eNotes').value.trim()};
+  const gv=$('#eGroup').value,v={name:$('#eName').value.trim(),group:gv==='__new'?'':gv,meal:$('#eMeal').value,rsvp:$('#eRsvp').value,email:$('#eEmail').value.trim(),phone:$('#ePhone').value.trim(),notes:$('#eNotes').value.trim()};
   if(!v.name)return;
   let g=editing;if(g)Object.assign(g,v);else{g={id:uid(),table:null,seat:null,...v};S.guests.push(g)}
   if(v.rsvp==='no')unseat(g);
@@ -633,7 +668,7 @@ function renderRsvp(){
   const q=$('#rSearch').value.toLowerCase();
   const rows=G.filter(g=>(rFilter==='all'||rs(g)===rFilter)&&(g.name+' '+(g.group||'')+' '+(g.email||'')).toLowerCase().includes(q)).sort((a,b)=>a.name.localeCompare(b.name));
   $('#rRows').innerHTML=rows.map(g=>`<div class="rrow"><div class="rn"><b>${esc(g.name)}</b>${g.notes?`<div class="muted" title="${esc(g.notes)}">${esc(g.notes.slice(0,46))}${g.notes.length>46?'…':''}</div>`:''}</div>
-    <div>${g.group?`<span class="chip">${esc(g.group)}</span>`:'<span class="muted">—</span>'}</div><div class="muted hm">${esc(g.meal||'—')}</div><div class="muted hm" style="overflow:hidden;text-overflow:ellipsis">${esc(g.email||'—')}</div>
+    <div class="hm">${g.group?`<span class="chip">${esc(g.group)}</span>`:'<span class="muted">—</span>'}</div><div class="muted hm">${esc(g.meal||'—')}</div><div>${g.phone?`<button class="btn wa" data-wa="${g.id}" title="${g.sent?'Send a reminder':'Send an invitation'}">${g.sent?'Remind':'Invite'}</button>`:`<button class="btn ghost" data-edit="${g.id}" title="Add a WhatsApp number">＋ Number</button>`}${g.sent?`<div class="muted" style="margin-top:3px">sent ${g.sent}× · ${ago(g.sentAt)}</div>`:''}</div>
     <div class="seg rs">${['yes','pending','no'].map(k=>`<button class="${k} ${rs(g)===k?'on':''}" data-rs="${k}" data-id="${g.id}">${k==='yes'?'Yes':k==='no'?'No':'Wait'}</button>`).join('')}</div>
     <button class="btn ghost" data-edit="${g.id}">Edit</button></div>`).join('')
     ||`<div class="empty">${n?'No guests match.':'No guests yet'}<small>${n?'':'Add your first guest to begin tracking replies.'}</small></div>`;
@@ -641,6 +676,7 @@ function renderRsvp(){
 $('#rsvp').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
   if(b.dataset.rs){const g=gById(b.dataset.id);g.rsvp=b.dataset.rs;if(g.rsvp==='no')unseat(g);render();return}
+  if(b.dataset.wa){sendWa(b.dataset.wa);return}
   if(b.dataset.edit){openEdit(b.dataset.edit);return}
   if(b.dataset.rf){rFilter=b.dataset.rf;document.querySelectorAll('#rFilter button').forEach(x=>x.classList.toggle('on',x===b));renderRsvp();return}
   if(b.dataset.gren){
@@ -663,6 +699,98 @@ $('#rMail').onclick=()=>{
   const em=S.guests.filter(g=>rs(g)==='pending'&&g.email).map(g=>g.email);
   if(!em.length){toast('No awaiting guests have an email address yet');return}
   location.href='mailto:?bcc='+em.map(encodeURIComponent).join(',')+'&subject='+encodeURIComponent('RSVP reminder'+(S.event?' · '+S.event:''))+'&body='+encodeURIComponent('Hello! A gentle reminder to let us know whether you can join us. Thank you!');
+};
+
+/* ---------- WhatsApp ---------- */
+const waDlg=$('#waDlg'),repDlg=$('#repDlg');
+function ago(t){if(!t)return '';const m=Math.round((Date.now()-t)/60000);return m<2?'just now':m<60?m+'m ago':m<1440?Math.round(m/60)+'h ago':Math.round(m/1440)+'d ago'}
+function waNumber(g){
+  const raw=(g.phone||'').trim(),d=raw.replace(/\D/g,''),cc=(S.wa.cc||'').replace(/\D/g,'');
+  if(!d)return '';
+  if(raw.startsWith('+'))return d;
+  if(d.startsWith('00'))return d.slice(2);
+  if(d.startsWith('0')&&cc)return cc+d.slice(1);
+  if(cc&&d.length<=10&&!d.startsWith(cc))return cc+d;
+  return d;
+}
+function waText(g){
+  const w=S.wa;let t=g.sent?w.remind:w.invite;
+  if(!w.date)t=t.replace(/\s*\bon \{date\}/g,'').replace(/\{date\}/g,'');
+  if(!w.venue)t=t.replace(/\s*\bat \{venue\}/g,'').replace(/\{venue\}/g,'');
+  return t.replace(/\{name\}/g,g.name.split(' ')[0]).replace(/\{event\}/g,S.event||'our wedding').replace(/\{date\}/g,w.date).replace(/\{venue\}/g,w.venue);
+}
+function sendWa(id){
+  const g=gById(id);if(!g)return;const num=waNumber(g);
+  if(!num){toast('Add a WhatsApp number first');openEdit(id);return}
+  window.open(`https://wa.me/${num}?text=${encodeURIComponent(waText(g))}`,'_blank','noopener');
+  g.sent=(g.sent||0)+1;g.sentAt=Date.now();render();
+}
+function renderWaQueue(){
+  const pend=S.guests.filter(g=>rs(g)==='pending');
+  $('#wCount').textContent=`${pend.length} guests · ${pend.filter(g=>waNumber(g)).length} with a number · ${pend.filter(g=>!g.sent).length} not yet messaged`;
+  $('#wQueue').innerHTML=[...pend].sort((a,b)=>(a.sent||0)-(b.sent||0)||a.name.localeCompare(b.name)).map(g=>{
+    const has=!!waNumber(g);
+    return `<div class="qrow"><span class="qn">${esc(g.name)}</span><span class="muted">${has?(g.sent?`sent ${g.sent}× · ${ago(g.sentAt)}`:'not yet messaged'):'no number'}</span>${has?`<button class="btn wa" type="button" data-wa="${g.id}">${g.sent?'Remind':'Send invite'}</button>`:`<button class="btn ghost" type="button" data-edit="${g.id}">＋ Number</button>`}</div>`}).join('')||'<p class="muted">Nobody is awaiting a reply.</p>';
+  $('#wPrev').textContent=waText({name:'Alex',sent:0});
+}
+function openWa(){
+  $('#wCc').value=S.wa.cc;$('#wDate').value=S.wa.date;$('#wVenue').value=S.wa.venue;$('#wInvite').value=S.wa.invite;$('#wRemind').value=S.wa.remind;
+  renderWaQueue();waDlg.showModal();
+}
+[['#wCc','cc'],['#wDate','date'],['#wVenue','venue'],['#wInvite','invite'],['#wRemind','remind']].forEach(([id,k])=>{
+  $(id).addEventListener('input',e=>{S.wa[k]=e.target.value;save();renderWaQueue()});
+});
+waDlg.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.wa)sendWa(b.dataset.wa);else if(b.dataset.edit)openEdit(b.dataset.edit);
+});
+$('#wClose').onclick=()=>waDlg.close();
+$('#rWa').onclick=openWa;
+
+/* paste replies */
+function classify(body){
+  const b=body.toLowerCase();
+  if(/\b(can'?t|cannot|can not|won'?t|unable|sorry|decline|regret|not able|not going|not coming|unfortunately)\b|❌|👎/.test(b))return 'no';
+  if(/^\W*no\b/.test(b))return 'no';
+  if(/\b(yes|yep|yeah|yay|attend|attending|coming|count us|accept|see you|will be there|we'?ll be there|confirm|definitely|absolutely)\b|✅|👍|🎉|❤/.test(b))return 'yes';
+  if(/\bno\b/.test(b))return 'no';
+  return '';
+}
+function matchGuest(sender){
+  const s=sender.toLowerCase().replace(/^~\s*/,'').trim(),digits=s.replace(/\D/g,'');
+  if(digits.length>=7){const g=S.guests.find(g=>{const n=waNumber(g);return n&&(n.endsWith(digits.slice(-9))||digits.endsWith(n.slice(-9)))});if(g)return g}
+  return S.guests.find(g=>g.name.toLowerCase()===s)||S.guests.find(g=>s.length>2&&(g.name.toLowerCase().includes(s)||s.includes(g.name.toLowerCase())))||null;
+}
+function parseReplies(text){
+  const hits=new Map();let skipped=0;
+  text.split(/\r?\n/).forEach(raw=>{
+    const line=raw.replace(/^\[?\d{1,4}[\/.\-]\d{1,2}[\/.\-]\d{1,4},?\s*\d{1,2}:\d{2}(:\d{2})?\s*([ap]\.?m\.?)?\]?\s*[-–]?\s*/i,'')
+                  .replace(/^\[?\d{1,2}:\d{2}(:\d{2})?\s*([ap]\.?m\.?)?,?\s*\d{1,4}[\/.\-]\d{1,2}[\/.\-]\d{1,4}\]?\s*[-–]?\s*/i,'').trim();
+    const i=line.indexOf(':');if(i<1){if(line)skipped++;return}
+    const g=matchGuest(line.slice(0,i)),body=line.slice(i+1).trim(),st=classify(body);
+    if(!g||!st){skipped++;return}
+    const meal=MEALS.find(m=>new RegExp('\\b'+m+'\\b','i').test(body))||'';
+    hits.set(g.id,{g,st,meal,body});
+  });
+  return {hits:[...hits.values()],skipped};
+}
+let repHits=[];
+$('#rRep').onclick=()=>{$('#pText').value='';$('#pList').innerHTML='';$('#pApply').hidden=true;repDlg.showModal();$('#pText').focus()};
+$('#pClose').onclick=()=>repDlg.close();
+$('#pRev').onclick=()=>{
+  const r=parseReplies($('#pText').value);repHits=r.hits;
+  $('#pList').innerHTML=(r.hits.length?r.hits.map((h,i)=>`<div class="qrow"><div><span class="qn">${esc(h.g.name)}</span><div class="muted">“${esc(h.body.slice(0,70))}”${h.meal?` · meal: ${esc(h.meal)}`:''}</div></div>
+    <select class="field" data-i="${i}" style="width:auto"><option value="yes" ${h.st==='yes'?'selected':''}>Attending</option><option value="no" ${h.st==='no'?'selected':''}>Declined</option><option value="skip">Skip</option></select><span></span></div>`).join('')
+    :'<p class="muted">No yes / no answers matched your guests.</p>')+(r.skipped?`<p class="muted">${r.skipped} line${r.skipped>1?'s':''} couldn't be matched and were ignored.</p>`:'');
+  $('#pApply').hidden=!r.hits.length;
+};
+$('#pApply').onclick=()=>{
+  let n=0;
+  document.querySelectorAll('#pList select').forEach(sel=>{
+    const h=repHits[+sel.dataset.i];if(!h||sel.value==='skip')return;
+    h.g.rsvp=sel.value;if(sel.value==='yes'&&h.meal&&!h.g.meal)h.g.meal=h.meal;if(sel.value==='no')unseat(h.g);n++;
+  });
+  repDlg.close();render();toast(`${n} RSVP${n===1?'':'s'} updated`);
 };
 
 /* ---------- venue layout ---------- */

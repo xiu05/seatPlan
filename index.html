@@ -306,6 +306,11 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:60;opa
 
 .guest .x[data-edit]{opacity:.6}.guest:hover .x[data-edit]{opacity:1}
 
+#dock .btn.on{background:var(--solid);color:var(--solid-ink)}
+body.hand #stage,body.hand #stage *{cursor:grab!important}
+body.panning #stage,body.panning #stage *{cursor:grabbing!important}
+body.hand #stage .seat:hover{transform:none}
+
 /* white gradient glow over every colour */
 #stage{background:linear-gradient(155deg,rgba(255,255,255,var(--wg)) 0%,rgba(255,255,255,calc(var(--wg)*.35)) 38%,rgba(255,255,255,0) 68%),radial-gradient(900px 620px at 88% 105%,rgba(255,255,255,calc(var(--wg)*.7)),transparent 70%),var(--wash),radial-gradient(1300px 800px at 50% 38%,transparent 35%,var(--vig) 135%),radial-gradient(var(--dot) 1px,transparent 1.3px) 0 0/28px 28px,var(--stagebg)}
 #rsvp{background:linear-gradient(155deg,rgba(255,255,255,var(--wg)) 0%,rgba(255,255,255,calc(var(--wg)*.35)) 38%,rgba(255,255,255,0) 68%),radial-gradient(900px 620px at 88% 105%,rgba(255,255,255,calc(var(--wg)*.7)),transparent 70%),var(--wash),radial-gradient(1300px 800px at 50% 30%,transparent 35%,var(--vig) 140%),var(--stagebg)}
@@ -354,6 +359,8 @@ dialog::backdrop{background:#1b140a77}
 <div id="hint">Drag a guest onto a seat<small>or click a guest, then a seat</small></div>
 
 <nav id="dock" aria-label="Tools">
+  <button class="btn" id="handBtn" title="Hand tool: drag to move around the board (H, or hold Space)" aria-pressed="false">Hand</button>
+  <span class="sep"></span>
   <button class="btn" id="addRound">＋ Round</button>
   <button class="btn" id="addRect">＋ Long</button>
   <button class="btn" id="venueBtn">Venue</button>
@@ -939,6 +946,44 @@ $('#pApply').onclick=()=>{
   });
   repDlg.close();render();toast(`${n} RSVP${n===1?'':'s'} updated`);
 };
+
+/* ---------- hand tool ---------- */
+let handOn=false,spaceDown=false,pan=null,handHinted=false;
+const typing=t=>t&&(t.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
+function syncHand(){
+  const on=handOn||spaceDown;document.body.classList.toggle('hand',on);
+  $('#handBtn').classList.toggle('on',handOn);$('#handBtn').setAttribute('aria-pressed',handOn);
+}
+function setHand(v){
+  handOn=v;syncHand();
+  if(v&&!handHinted){handHinted=true;toast('Hand tool on. Drag the board to move around. Press H or Esc to switch back.',5000)}
+}
+$('#handBtn').onclick=()=>setHand(!handOn);
+document.addEventListener('keydown',e=>{
+  if(view!=='plan'||typing(e.target)||document.querySelector('dialog[open]')||e.metaKey||e.ctrlKey||e.altKey)return;
+  if(e.key==='h'||e.key==='H'){setHand(!handOn);e.preventDefault()}
+  else if(e.key==='Escape'&&handOn){setHand(false)}
+  else if(e.code==='Space'&&!spaceDown){spaceDown=true;syncHand();e.preventDefault()}
+});
+document.addEventListener('keyup',e=>{if(e.code==='Space'&&spaceDown){spaceDown=false;syncHand()}});
+window.addEventListener('blur',()=>{spaceDown=false;syncHand()});
+/* capture phase: while panning nothing underneath (tables, seats, overlay) should react */
+stage.addEventListener('pointerdown',e=>{
+  if(!(handOn||spaceDown||e.button===1))return;
+  e.preventDefault();e.stopImmediatePropagation();
+  pan={x:e.clientX,y:e.clientY,l:stage.scrollLeft,t:stage.scrollTop,moved:false};
+  document.body.classList.add('panning');stage.setPointerCapture(e.pointerId);
+},true);
+stage.addEventListener('pointermove',e=>{
+  if(!pan)return;
+  if(Math.abs(e.clientX-pan.x)+Math.abs(e.clientY-pan.y)>3)pan.moved=true;
+  stage.scrollLeft=pan.l-(e.clientX-pan.x);stage.scrollTop=pan.t-(e.clientY-pan.y);
+});
+const endPan=()=>{if(pan){pan=null;document.body.classList.remove('panning')}};
+stage.addEventListener('pointerup',endPan);stage.addEventListener('pointercancel',endPan);
+stage.addEventListener('click',e=>{if(handOn||spaceDown){e.stopImmediatePropagation();e.preventDefault()}},true);
+stage.addEventListener('dragstart',e=>{if(handOn||spaceDown)e.preventDefault()},true);
+stage.addEventListener('auxclick',e=>{if(e.button===1)e.preventDefault()});
 
 /* ---------- venue layout ---------- */
 const vImg=$('#venue'),vH=$('#vHandles');

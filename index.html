@@ -300,6 +300,8 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:60;opa
 .stat-big b{font-size:54px}
 
 
+.guest .x[data-edit]{opacity:.6}.guest:hover .x[data-edit]{opacity:1}
+
 /* white gradient glow over every colour */
 #stage{background:linear-gradient(155deg,rgba(255,255,255,var(--wg)) 0%,rgba(255,255,255,calc(var(--wg)*.35)) 38%,rgba(255,255,255,0) 68%),radial-gradient(900px 620px at 88% 105%,rgba(255,255,255,calc(var(--wg)*.7)),transparent 70%),var(--wash),radial-gradient(1300px 800px at 50% 38%,transparent 35%,var(--vig) 135%),radial-gradient(var(--dot) 1px,transparent 1.3px) 0 0/28px 28px,var(--stagebg)}
 #rsvp{background:linear-gradient(155deg,rgba(255,255,255,var(--wg)) 0%,rgba(255,255,255,calc(var(--wg)*.35)) 38%,rgba(255,255,255,0) 68%),radial-gradient(900px 620px at 88% 105%,rgba(255,255,255,calc(var(--wg)*.7)),transparent 70%),var(--wash),radial-gradient(1300px 800px at 50% 30%,transparent 35%,var(--vig) 140%),var(--stagebg)}
@@ -336,6 +338,7 @@ dialog::backdrop{background:#1b140a77}
       <select class="field" id="gMeal" aria-label="Meal"><option value="">Meal</option><option>Chicken</option><option>Beef</option><option>Fish</option><option>Vegetarian</option><option>Vegan</option><option>Kids</option></select>
     </div>
     <input class="field" id="gGroupNew" placeholder="Name your new group, then press Enter" hidden>
+    <input class="field" id="gPhone" type="tel" placeholder="WhatsApp number, e.g. +44 7700 900123" autocomplete="off">
   </div>
   <div class="tools">
     <div class="seg" id="filter"><button data-f="all">All</button><button data-f="un" class="on">Unseated</button><button data-f="seated">Seated</button></div>
@@ -417,7 +420,7 @@ dialog::backdrop{background:#1b140a77}
       <label class="fl"><span class="caps">Meal</span><select class="field" id="eMeal"></select></label>
       <input class="field full" id="eGroupNew" placeholder="Name your new group, then press Enter" hidden>
       <label class="fl"><span class="caps">WhatsApp number</span><input class="field" id="ePhone" type="tel" placeholder="+44 7700 900123" autocomplete="off"></label>
-      <label class="fl"><span class="caps">Email</span><input class="field" id="eEmail" type="email" autocomplete="off"></label>
+      <label class="fl"><span class="caps">Email</span><input class="field" id="eEmail" type="text" inputmode="email" autocomplete="off"></label>
       <label class="fl full"><span class="caps">RSVP</span><select class="field" id="eRsvp"><option value="pending">Awaiting reply</option><option value="yes">Attending</option><option value="no">Declined</option></select></label>
       <label class="fl full"><span class="caps">Notes</span><textarea class="field" id="eNotes" placeholder="Allergies, plus-one, anything to remember…"></textarea></label>
     </div>
@@ -550,7 +553,7 @@ function renderGuests(){
     if(gr!==cur){cur=gr;html+=`<div class="gh"><span class="caps">${esc(gr||'No group')}</span></div>`}
     const t=tableById(g.table);
     html+=`<div class="guest ${selected===g.id?'sel':''} ${rs(g)==='no'?'dec':''}" draggable="true" data-g="${g.id}" style="--c:${gColor(g)}">
-      <div class="n"><b>${esc(g.name)}</b>${g.meal?`<small>${esc(g.meal)}</small>`:''}</div>
+      <div class="n"><b>${esc(g.name)}</b>${(g.meal||g.phone)?`<small>${esc([g.meal,g.phone].filter(Boolean).join('  ·  '))}</small>`:''}</div>
       ${t?`<span class="at">${esc(t.name)}</span>`:''}
       <button class="x" data-edit="${g.id}" title="Edit guest" aria-label="Edit ${esc(g.name)}">✎</button>
       <button class="x" data-del="${g.id}" title="Remove guest" aria-label="Remove ${esc(g.name)}">×</button></div>`;
@@ -679,8 +682,8 @@ stage.addEventListener('pointerup',()=>{if(drag){drag=null;save()}});
 
 function addGuest(name,group,meal,phone){name=name.trim();if(!name)return false;S.guests.push({id:uid(),name,group:ensureGroup(group),meal:meal||'',rsvp:'pending',email:'',phone:(phone||'').trim(),notes:'',table:null,seat:null});return true}
 bindGroup($('#gGroup'),$('#gGroupNew'),render);
-$('#gAdd').onclick=()=>{commitGroup($('#gGroup'),$('#gGroupNew'));if(addGuest($('#gName').value,$('#gGroup').value,$('#gMeal').value)){$('#gName').value='';render()}$('#gName').focus()};
-$('#gName').onkeydown=e=>{if(e.key==='Enter')$('#gAdd').click()};
+$('#gAdd').onclick=()=>{commitGroup($('#gGroup'),$('#gGroupNew'));if(addGuest($('#gName').value,$('#gGroup').value,$('#gMeal').value,$('#gPhone').value)){$('#gName').value='';$('#gPhone').value='';render()}$('#gName').focus()};
+$('#gName').onkeydown=$('#gPhone').onkeydown=e=>{if(e.key==='Enter')$('#gAdd').click()};
 $('#search').oninput=renderGuests;
 $('#filter').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;fmode=b.dataset.f;document.querySelectorAll('#filter button').forEach(x=>x.classList.toggle('on',x===b));renderGuests()};
 $('#evName').oninput=e=>{S.event=e.target.value;save()};

@@ -13,28 +13,28 @@
   --gold:#a4833f;--gold-soft:#a4833f38;--warn:#a4543f;--shadow:0 1px 2px #1c1a0e33,0 18px 44px -14px #1c1a0e88;
   --table:#f8f1de;--dot:#8f916b;--yes:#566b48;--no:#a4543f;
   --solid:#2b2119;--solid-ink:#f3ebd7;--stagebg:#7b7d57;--vig:#43452b;--seat-line:#efe6cf;--seat-ink:#efe6cf;--hint:#efe6cfd0;
-  --hero:#f6eed8;--herobg:linear-gradient(135deg,#8a8c63,#686a46);--halo:#7b7d57;--grain:.4;
+  --hero:#f6eed8;--herobg:linear-gradient(135deg,#8a8c63,#686a46);--halo:#7b7d57;--grain:.4;--wg:.24;
 }
 :root[data-theme="peach"]{
   --bg:#fff1e6;--bg2:#f7dfcf;--panel:#fff6ee;--paper:#fffaf5;--ink:#4a2f26;--mute:#8a6a5c;--line:#efd7c6;
   --gold:#c0714f;--gold-soft:#c0714f36;--warn:#b5503f;--shadow:0 1px 2px #5a2d1a22,0 18px 44px -14px #5a2d1a66;
   --table:#fffaf5;--dot:#e3a98a;--yes:#5e7f58;--no:#b5503f;
-  --solid:#b8664a;--solid-ink:#fffaf5;--stagebg:#f0c4a9;--vig:#cf936f;--seat-line:#fff6ee;--seat-ink:#fff6ee;--hint:#7a4c3a;
-  --hero:#fff6ee;--herobg:linear-gradient(135deg,#f2b898,#d78d69);--halo:#f0c4a9;--grain:.3;
+  --solid:#b8664a;--solid-ink:#fffaf5;--stagebg:#f0c4a9;--vig:#cf936f;--seat-line:#a45a40;--seat-ink:#8f4f38;--hint:#7a4c3a;
+  --hero:#fff6ee;--herobg:linear-gradient(135deg,#f2b898,#d78d69);--halo:#f0c4a9;--grain:.3;--wg:.5;
 }
 :root[data-theme="sky"]{
   --bg:#f3f7fb;--bg2:#e3ebf4;--panel:#f9fbfd;--paper:#ffffff;--ink:#2c3a4d;--mute:#64758c;--line:#dce5ef;
   --gold:#6f8fb5;--gold-soft:#6f8fb538;--warn:#b5604f;--shadow:0 1px 2px #2c3a4d14,0 18px 44px -14px #2c3a4d55;
   --table:#ffffff;--dot:#aebfd4;--yes:#4f8068;--no:#b5604f;
-  --solid:#4f6f96;--solid-ink:#ffffff;--stagebg:#cfdcea;--vig:#9db3cb;--seat-line:#ffffff;--seat-ink:#566a83;--hint:#4c6280;
-  --hero:#2c3a4d;--herobg:linear-gradient(135deg,#e4edf6,#b9cde2);--halo:#cfdcea;--grain:.28;
+  --solid:#4f6f96;--solid-ink:#ffffff;--stagebg:#cfdcea;--vig:#9db3cb;--seat-line:#6f8fb5;--seat-ink:#566a83;--hint:#4c6280;
+  --hero:#2c3a4d;--herobg:linear-gradient(135deg,#e4edf6,#b9cde2);--halo:#cfdcea;--grain:.28;--wg:.6;
 }
 :root[data-theme="ivory"]{
   --bg:#faf6ec;--bg2:#efe8d6;--panel:#fffdf7;--paper:#ffffff;--ink:#2f2a24;--mute:#857b6b;--line:#e8e0cd;
   --gold:#a98a4b;--gold-soft:#a98a4b36;--warn:#a4543f;--shadow:0 1px 2px #2f2a2418,0 18px 44px -14px #2f2a2450;
   --table:#ffffff;--dot:#d8cfba;--yes:#5e7a55;--no:#a4543f;
   --solid:#2f2a24;--solid-ink:#fffdf7;--stagebg:#f3eee2;--vig:#d6cbb2;--seat-line:#b3a78f;--seat-ink:#8c8068;--hint:#8c8068;
-  --hero:#2f2a24;--herobg:linear-gradient(135deg,#f9f4e7,#e6dec8);--halo:#f3eee2;--grain:.28;
+  --hero:#2f2a24;--herobg:linear-gradient(135deg,#f9f4e7,#e6dec8);--halo:#f3eee2;--grain:.28;--wg:.7;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
@@ -298,6 +298,12 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:60;opa
 .card::after{content:'';position:absolute;inset:6px;border:1px solid var(--gold-soft);border-radius:13px;pointer-events:none}
 .card h4.caps{font-family:var(--script);font-size:30px;letter-spacing:0;text-transform:none;color:var(--ink);font-weight:400;margin:-4px 0 10px;line-height:1.1}
 .stat-big b{font-size:54px}
+
+
+/* white gradient glow over every colour */
+#stage{background:linear-gradient(155deg,rgba(255,255,255,var(--wg)) 0%,rgba(255,255,255,calc(var(--wg)*.35)) 38%,rgba(255,255,255,0) 68%),radial-gradient(900px 620px at 88% 105%,rgba(255,255,255,calc(var(--wg)*.7)),transparent 70%),var(--wash),radial-gradient(1300px 800px at 50% 38%,transparent 35%,var(--vig) 135%),radial-gradient(var(--dot) 1px,transparent 1.3px) 0 0/28px 28px,var(--stagebg)}
+#rsvp{background:linear-gradient(155deg,rgba(255,255,255,var(--wg)) 0%,rgba(255,255,255,calc(var(--wg)*.35)) 38%,rgba(255,255,255,0) 68%),radial-gradient(900px 620px at 88% 105%,rgba(255,255,255,calc(var(--wg)*.7)),transparent 70%),var(--wash),radial-gradient(1300px 800px at 50% 30%,transparent 35%,var(--vig) 140%),var(--stagebg)}
+.rhead:not(.has-cover){background:linear-gradient(160deg,rgba(255,255,255,calc(var(--wg) + .12)),rgba(255,255,255,0) 65%),var(--herobg)}
 
 /* dialogs */
 dialog{outline:1px solid var(--gold-soft);outline-offset:-9px}

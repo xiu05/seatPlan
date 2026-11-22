@@ -10,13 +10,13 @@
 :root{
   --bg:#f4efe7;--bg2:#ece5d9;--panel:#fbf8f3;--paper:#fffdf9;--ink:#26221e;--mute:#8c8377;--line:#e2d9cb;
   --gold:#a98550;--gold-soft:#a9855033;--warn:#b5543f;--shadow:0 1px 2px #3a2e1f14,0 12px 40px -12px #3a2e1f33;
-  --table:#fffdf9;--dot:#d9cfbf;
+  --table:#fffdf9;--dot:#d9cfbf;--yes:#5e7466;--no:#b5543f;
   --serif:'Cormorant Garamond',Georgia,'Times New Roman',serif;--sans:'Jost',system-ui,-apple-system,'Segoe UI',sans-serif;
 }
 :root[data-theme="noir"]{
   --bg:#12100e;--bg2:#0d0c0a;--panel:#1b1814;--paper:#221e19;--ink:#f0e9db;--mute:#8f8577;--line:#332d25;
   --gold:#c9a76b;--gold-soft:#c9a76b3a;--warn:#e07a63;--shadow:0 1px 2px #0006,0 16px 50px -12px #000a;
-  --table:#27221c;--dot:#2a251f;
+  --table:#27221c;--dot:#2a251f;--yes:#86ad90;--no:#e07a63;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
@@ -131,7 +131,67 @@ dialog p{color:var(--mute);font-size:13px;margin:0 0 14px}
 dialog textarea{height:180px;resize:vertical;line-height:1.6}
 .dact{margin-top:14px;display:flex;gap:8px;justify-content:flex-end}
 
+#venue{position:absolute;display:none;user-select:none;-webkit-user-drag:none;border-radius:4px;box-shadow:0 10px 40px -16px #0007;pointer-events:none}
+#venue.edit{pointer-events:auto;cursor:move;outline:1px dashed var(--gold);outline-offset:3px}
+#tables{position:absolute;left:0;top:0;width:2400px;height:1600px;pointer-events:none}
+#tables .table{pointer-events:auto}
+#venuePanel{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);width:min(360px,calc(100vw - 24px));background:var(--panel);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:20px 22px;z-index:35}
+#venuePanel[hidden]{display:none}
+#venuePanel h4{font-family:var(--serif);font-style:italic;font-weight:500;font-size:24px;margin:0 0 4px}
+#venuePanel p{margin:0 0 14px;color:var(--mute);font-size:12.5px;line-height:1.5}
+#venuePanel .note{font-size:11.5px;border-top:1px solid var(--line);padding-top:12px;margin:14px 0 0}
+.vrow{display:grid;grid-template-columns:70px 1fr;align-items:center;gap:10px;margin:12px 0}
+.vrow input[type=range]{width:100%;accent-color:var(--gold)}
+.vact{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.hot-drop #stage{outline:2px dashed var(--gold);outline-offset:-8px}
 #printArea{display:none}
+.guest.dec{opacity:.5}.guest.dec .n b{text-decoration:line-through}
+.fl{display:grid;gap:5px}.fl .caps{font-size:9.5px}
+.egrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.egrid .full{grid-column:1/-1}
+textarea.field{resize:vertical;height:70px;font-family:var(--sans)}
+dialog .dact .del{margin-right:auto;color:var(--no)}
+#viewNav::before{content:'';position:absolute;inset:-16px -60px;background:radial-gradient(closest-side,var(--bg) 55%,transparent);z-index:-1;pointer-events:none}
+#viewNav{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:40;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px;box-shadow:var(--shadow);display:flex}
+#viewNav button{border:0;background:transparent;padding:8px 22px;border-radius:999px;cursor:pointer;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);font-weight:500}
+#viewNav button.on{background:var(--ink);color:var(--bg)}
+:root[data-theme="noir"] #viewNav button.on{background:var(--gold);color:#14110d}
+#rsvp{display:none;position:fixed;inset:0;overflow:auto;background:radial-gradient(1100px 520px at 50% -8%,var(--paper),transparent 70%),var(--bg);z-index:10;padding:92px 28px 70px}
+body.view-rsvp #rsvp{display:block}
+body.view-rsvp #stage,body.view-rsvp #book,body.view-rsvp #dock,body.view-rsvp #hint,body.view-rsvp #venuePanel{display:none!important}
+.rwrap{max-width:1120px;margin:0 auto}
+.rhead{text-align:center;margin-bottom:30px}
+.rhead h2{font-family:var(--serif);font-style:italic;font-weight:500;font-size:48px;margin:6px 0 0;line-height:1.05}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px 22px;box-shadow:var(--shadow)}
+.card h4{margin:0 0 14px;font-family:var(--sans);font-weight:500}
+.rgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px}
+.stat-big b{display:block;font-family:var(--serif);font-weight:500;font-size:50px;line-height:1}
+.stat-big .caps{margin-top:10px;display:block}
+.rtwo{display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:14px;margin-bottom:14px}
+.ring{display:flex;align-items:center;gap:18px}
+.ring p{margin:6px 0 0;font-size:12.5px;color:var(--mute);line-height:1.5}
+.bar-row{display:grid;grid-template-columns:90px 1fr 26px;gap:10px;align-items:center;margin:10px 0;font-size:12.5px}
+.bar-row b{text-align:right;font-weight:500}
+.track{height:8px;background:var(--line);border-radius:8px;overflow:hidden;display:flex}
+.track i{display:block;height:100%;background:var(--gold)}
+.track i.y{background:var(--yes)}.track i.n{background:var(--no)}.track i.p{background:var(--gold);opacity:.55}
+.muted{color:var(--mute);font-size:12.5px}
+.grow{display:grid;grid-template-columns:100px 1fr auto;gap:10px;align-items:center;margin:10px 0;font-size:12.5px}
+.grow .lnk{border:0;background:none;color:var(--mute);cursor:pointer;font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:2px 4px}
+.grow .lnk:hover{color:var(--gold)}
+.rbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:26px 0 8px}
+.rbar .seg{width:auto}.rbar .seg button{padding:6px 14px}
+.rbar .field{max-width:170px}.rbar .btn{padding:8px 13px;font-size:11px}.rbar .sp{flex:1}
+.rrow{display:grid;grid-template-columns:1.5fr 1fr 1fr 1.4fr auto auto;gap:14px;align-items:center;padding:11px 12px;border-bottom:1px solid var(--line)}
+.rrow:last-child{border-bottom:0}
+.rrow.h{padding-bottom:8px}
+.rrow .rn b{font-family:var(--serif);font-weight:500;font-size:19px}
+.chip{display:inline-block;font-size:11px;letter-spacing:.04em;padding:3px 10px;border-radius:999px;border:1px solid var(--line);background:var(--paper)}
+.rs{padding:2px}.rs button{padding:5px 11px!important}
+.rs button.on.yes{background:var(--yes)!important;color:#fff!important}
+.rs button.on.no{background:var(--no)!important;color:#fff!important}
+.rs button.on.pending{background:var(--gold)!important;color:#fff!important}
+@media(max-width:900px){.rgrid{grid-template-columns:1fr 1fr}.rtwo{grid-template-columns:1fr}.rrow{grid-template-columns:1fr auto auto}.rrow .hm{display:none}#rsvp{padding:84px 14px 60px}#book{top:64px!important}#stage{top:calc(64px + 46vh + 12px)!important}}
+@media print{#viewNav,#rsvp{display:none!important}}
 @media print{
   html,body{height:auto;overflow:visible;background:#fff;color:#000}
   #stage,#book,#dock,#hint,#toast,dialog{display:none!important}
@@ -154,7 +214,7 @@ dialog textarea{height:180px;resize:vertical;line-height:1.6}
 </head>
 <body>
 
-<section id="stage"><div id="sizer"><div id="floor"></div></div></section>
+<section id="stage"><div id="sizer"><div id="floor"><img id="venue" alt="Venue layout" draggable="false"><div id="tables"></div></div></div></section>
 
 <aside id="book">
   <div class="mast">
@@ -170,10 +230,10 @@ dialog textarea{height:180px;resize:vertical;line-height:1.6}
   <div class="compose">
     <div class="line"><input class="field" id="gName" placeholder="Add a guest…" autocomplete="off"><button class="btn solid" id="gAdd">Add</button></div>
     <div class="line">
-      <input class="field" id="gGroup" placeholder="Group" list="groups" autocomplete="off">
+      <select class="field" id="gGroup" aria-label="Group"></select>
       <select class="field" id="gMeal" aria-label="Meal"><option value="">Meal</option><option>Chicken</option><option>Beef</option><option>Fish</option><option>Vegetarian</option><option>Vegan</option><option>Kids</option></select>
     </div>
-    <datalist id="groups"></datalist>
+    <input class="field" id="gGroupNew" placeholder="Name your new group, then press Enter" hidden>
   </div>
   <div class="tools">
     <div class="seg" id="filter"><button data-f="all">All</button><button data-f="un" class="on">Unseated</button><button data-f="seated">Seated</button></div>
@@ -187,6 +247,7 @@ dialog textarea{height:180px;resize:vertical;line-height:1.6}
 <nav id="dock" aria-label="Tools">
   <button class="btn" id="addRound">＋ Round</button>
   <button class="btn" id="addRect">＋ Long</button>
+  <button class="btn" id="venueBtn">Venue</button>
   <button class="btn solid" id="autoBtn">Auto-seat</button>
   <span class="sep"></span>
   <button class="btn z" id="zOut" aria-label="Zoom out">−</button><span id="zoomv">100%</span><button class="btn z" id="zIn" aria-label="Zoom in">+</button>
@@ -199,8 +260,60 @@ dialog textarea{height:180px;resize:vertical;line-height:1.6}
   <button class="btn" id="themeBtn" title="Switch theme">Noir</button>
   <input type="file" id="fileIn" accept=".json" hidden>
 </nav>
+<div id="venuePanel" hidden>
+  <h4>Venue layout</h4>
+  <p>Upload your floor plan as a JPG, PNG or PDF, then seat your tables right on top of it. You can also drop a file anywhere on the canvas.</p>
+  <button class="btn solid" id="vUp">Upload layout</button>
+  <div id="vCtl" hidden>
+    <div class="vrow"><span class="caps">Opacity</span><input type="range" id="vOp" min="10" max="100"></div>
+    <div class="vrow"><span class="caps">Size</span><input type="range" id="vSize" min="400" max="3000" step="20"></div>
+    <div class="vact"><button class="btn" id="vLock">Lock position</button><button class="btn" id="vRemove">Remove</button></div>
+  </div>
+  <p class="note">Have a SketchUp file? Browsers can't open .skp. In SketchUp use File › Export › 2D Graphic (Top view, Parallel Projection) and upload that image or PDF.</p>
+  <input type="file" id="vFile" accept=".jpg,.jpeg,.png,.webp,.pdf,.skp,image/*,application/pdf" hidden>
+</div>
 <div id="toast"></div>
 <div id="printArea"></div>
+<div id="viewNav" role="tablist"><button class="on" data-v="plan">Seating</button><button data-v="rsvp">RSVP</button></div>
+<section id="rsvp"><div class="rwrap">
+  <div class="rhead"><span class="caps" style="color:var(--gold)">RSVP Dashboard</span><h2 id="rEvent"></h2></div>
+  <div class="rgrid" id="rStats"></div>
+  <div class="rtwo">
+    <div class="card"><h4 class="caps">Response rate</h4><div class="ring" id="rRing"></div></div>
+    <div class="card"><h4 class="caps">Meals · attending</h4><div id="rMeals"></div></div>
+    <div class="card"><h4 class="caps">Groups</h4><div id="rGroups"></div></div>
+  </div>
+  <div class="card" style="padding-bottom:8px">
+    <div class="rbar" style="margin-top:0">
+      <div class="seg" id="rFilter"><button data-rf="all" class="on">All</button><button data-rf="pending">Awaiting</button><button data-rf="yes">Attending</button><button data-rf="no">Declined</button></div>
+      <input class="field" id="rSearch" placeholder="Search guests…">
+      <span class="sp"></span>
+      <button class="btn" id="rMail">Email awaiting</button>
+      <button class="btn" id="rCopy">Copy reminder list</button>
+      <button class="btn" id="rCsv">Export CSV</button>
+      <button class="btn solid" id="rAdd">＋ Add guest</button>
+    </div>
+    <div class="rrow h"><span class="caps">Guest</span><span class="caps">Group</span><span class="caps hm">Meal</span><span class="caps hm">Email</span><span class="caps">Reply</span><span></span></div>
+    <div id="rRows"></div>
+  </div>
+</div></section>
+
+<dialog id="editDlg">
+  <form id="editForm" method="dialog">
+    <h3 id="editTitle">Edit guest</h3>
+    <p>Group names are picked from your list so they stay consistent.</p>
+    <div class="egrid">
+      <label class="fl full"><span class="caps">Name</span><input class="field" id="eName" required autocomplete="off"></label>
+      <label class="fl"><span class="caps">Group</span><select class="field" id="eGroup"></select></label>
+      <label class="fl"><span class="caps">Meal</span><select class="field" id="eMeal"></select></label>
+      <input class="field full" id="eGroupNew" placeholder="Name your new group, then press Enter" hidden>
+      <label class="fl"><span class="caps">RSVP</span><select class="field" id="eRsvp"><option value="pending">Awaiting reply</option><option value="yes">Attending</option><option value="no">Declined</option></select></label>
+      <label class="fl"><span class="caps">Email</span><input class="field" id="eEmail" type="email" autocomplete="off"></label>
+      <label class="fl full"><span class="caps">Notes</span><textarea class="field" id="eNotes" placeholder="Allergies, plus-one, anything to remember…"></textarea></label>
+    </div>
+    <div class="dact"><button class="btn del" type="button" id="eDelete">Remove guest</button><button class="btn" type="button" id="eCancel">Cancel</button><button class="btn solid" type="submit">Save</button></div>
+  </form>
+</dialog>
 
 <dialog id="bulkDlg">
   <form method="dialog">
@@ -220,21 +333,48 @@ const PALETTE=['#8c6a5d','#5e7466','#9a7b4f','#6b5b73','#4f6a7a','#a0605a','#7a7
 let S=load()||{event:'',theme:'ivory',guests:[],tables:[
   {id:uid(),name:'Table 1',shape:'round',seats:8,x:500,y:200},
   {id:uid(),name:'Table 2',shape:'round',seats:8,x:860,y:200}]};
-let selected=null,selTable=null,drag=null,zoom=1,fmode='un';
+let selected=null,selTable=null,drag=null,zoom=1,fmode='un',view='plan',rFilter='all';
 
 function load(){try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const gById=id=>S.guests.find(g=>g.id===id);
-const groups=()=>[...new Set(S.guests.map(g=>g.group).filter(Boolean))].sort();
+const groups=()=>[...new Set([...(S.groups||[]),...S.guests.map(g=>g.group).filter(Boolean)])];
+S.groups=groups();
+const rs=g=>g.rsvp||'pending';
+function ensureGroup(name){
+  name=(name||'').trim();if(!name||name==='__new')return '';
+  const ex=groups().find(x=>x.toLowerCase()===name.toLowerCase());
+  if(ex)return ex;S.groups.push(name);return name;
+}
+const MEALS=['Chicken','Beef','Fish','Vegetarian','Vegan','Kids'];
+function fillGroupSelect(sel,val){
+  const gs=groups();
+  sel.innerHTML='<option value="">No group</option>'+gs.map(g=>`<option value="${esc(g)}">${esc(g)}</option>`).join('')+'<option value="__new">＋ New group…</option>';
+  sel.value=(val===''||val==='__new'||gs.includes(val))?val:'';
+}
+function fillMeal(sel,val){
+  const ms=val&&!MEALS.includes(val)?[...MEALS,val]:MEALS;
+  sel.innerHTML='<option value="">No preference</option>'+ms.map(m=>`<option>${esc(m)}</option>`).join('');sel.value=val||'';
+}
+function commitGroup(sel,inp){
+  if(sel.value!=='__new')return;
+  const g=ensureGroup(inp.value);fillGroupSelect(sel,g);inp.hidden=true;inp.value='';save();
+}
+function bindGroup(sel,inp,after){
+  sel.addEventListener('change',()=>{if(sel.value==='__new'){inp.hidden=false;inp.focus()}else{inp.hidden=true;inp.value=''}});
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();commitGroup(sel,inp);after&&after()}if(e.key==='Escape'&&!inp.hidden){e.stopPropagation();fillGroupSelect(sel,'');inp.hidden=true;inp.value=''}});
+  inp.addEventListener('blur',()=>{if(!inp.hidden){commitGroup(sel,inp);after&&after()}});
+}
 const gColor=g=>g.group?PALETTE[groups().indexOf(g.group)%PALETTE.length]:'#8a8479';
 const initials=n=>n.trim().split(/\s+/).map(w=>w[0]||'').join('').slice(0,2).toUpperCase();
 const occupant=(t,i)=>S.guests.find(g=>g.table===t.id&&g.seat===i);
 const tableById=id=>S.tables.find(t=>t.id===id);
-let toastT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2600)}
+let toastT;function toast(m,ms=2600){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),ms)}
 
 function assign(gid,tid,idx){
   const g=gById(gid);if(!g)return;
+  if(rs(g)==='no'){toast(`${g.name} has declined, so can't be seated`);return}
   const other=occupant(tableById(tid),idx);
   const prev={table:g.table,seat:g.seat};
   if(other&&other!==g){other.table=prev.table;other.seat=prev.seat}
@@ -247,26 +387,27 @@ function render(){
   document.documentElement.dataset.theme=S.theme||'ivory';
   $('#themeBtn').textContent=S.theme==='noir'?'Ivory':'Noir';
   if(document.activeElement!==$('#evName'))$('#evName').value=S.event||'';
-  const seated=S.guests.filter(g=>g.table).length,seats=S.tables.reduce((a,t)=>a+t.seats,0);
-  $('#sTotal').textContent=S.guests.length;$('#sSeated').textContent=seated;$('#sSeats').textContent=seats;
-  $('#barFill').style.width=(S.guests.length?seated/S.guests.length*100:0)+'%';
-  $('#groups').innerHTML=groups().map(g=>`<option value="${esc(g)}">`).join('');
+  const act=S.guests.filter(g=>rs(g)!=='no'),seated=act.filter(g=>g.table).length,seats=S.tables.reduce((a,t)=>a+t.seats,0);
+  $('#sTotal').textContent=act.length;$('#sSeated').textContent=seated;$('#sSeats').textContent=seats;
+  $('#barFill').style.width=(act.length?seated/act.length*100:0)+'%';
+  fillGroupSelect($('#gGroup'),$('#gGroup').value);
   $('#hint').style.opacity=S.guests.length?0:1;
-  renderGuests();renderFloor();applyZoom();save();
+  renderGuests();renderFloor();renderVenue();applyZoom();if(view==='rsvp')renderRsvp();save();
 }
 
 function renderGuests(){
   const q=$('#search').value.toLowerCase();
-  const list=S.guests.filter(g=>(fmode==='all'||(fmode==='un')===!g.table)&&(g.name+' '+g.group).toLowerCase().includes(q))
+  const list=S.guests.filter(g=>(rs(g)!=='no'||fmode==='all')&&(fmode==='all'||(fmode==='un')===!g.table)&&(g.name+' '+g.group).toLowerCase().includes(q))
     .sort((a,b)=>(a.group||'zzz').localeCompare(b.group||'zzz')||a.name.localeCompare(b.name));
   let html='',cur=null;
   for(const g of list){
     const gr=g.group||'';
     if(gr!==cur){cur=gr;html+=`<div class="gh"><span class="caps">${esc(gr||'No group')}</span></div>`}
     const t=tableById(g.table);
-    html+=`<div class="guest ${selected===g.id?'sel':''}" draggable="true" data-g="${g.id}" style="--c:${gColor(g)}">
+    html+=`<div class="guest ${selected===g.id?'sel':''} ${rs(g)==='no'?'dec':''}" draggable="true" data-g="${g.id}" style="--c:${gColor(g)}">
       <div class="n"><b>${esc(g.name)}</b>${g.meal?`<small>${esc(g.meal)}</small>`:''}</div>
       ${t?`<span class="at">${esc(t.name)}</span>`:''}
+      <button class="x" data-edit="${g.id}" title="Edit guest" aria-label="Edit ${esc(g.name)}">✎</button>
       <button class="x" data-del="${g.id}" title="Remove guest" aria-label="Remove ${esc(g.name)}">×</button></div>`;
   }
   if(!html){
@@ -293,7 +434,7 @@ function seatPositions(t){
 }
 
 function renderFloor(){
-  $('#floor').innerHTML=S.tables.map(t=>{
+  $('#tables').innerHTML=S.tables.map(t=>{
     const {w,h,pos}=seatPositions(t);
     const used=S.guests.filter(g=>g.table===t.id).length;
     const seats=pos.map(([x,y],i)=>{
@@ -323,11 +464,14 @@ document.addEventListener('dragstart',e=>{
 const stage=$('#stage');
 let hot=null;const clearHot=()=>{if(hot){hot.classList.remove('hot');hot=null}};
 stage.addEventListener('dragover',e=>{
+  if(e.dataTransfer&&[...e.dataTransfer.types].includes('Files')){e.preventDefault();document.body.classList.add('hot-drop');return}
   const s=e.target.closest('.seat');
   if(s){e.preventDefault();if(hot!==s){clearHot();hot=s;s.classList.add('hot')}}else clearHot();
 });
-stage.addEventListener('dragleave',e=>{if(!stage.contains(e.relatedTarget))clearHot()});
+stage.addEventListener('dragleave',e=>{if(!stage.contains(e.relatedTarget)){clearHot();document.body.classList.remove('hot-drop')}});
 stage.addEventListener('drop',e=>{
+  document.body.classList.remove('hot-drop');
+  if(e.dataTransfer.files&&e.dataTransfer.files.length){e.preventDefault();loadVenue(e.dataTransfer.files[0]);return}
   clearHot();const s=e.target.closest('.seat');if(!s)return;e.preventDefault();
   assign(e.dataTransfer.getData('text/plain'),s.dataset.t,+s.dataset.i);render();
 });
@@ -339,7 +483,9 @@ $('#book').addEventListener('drop',e=>{
 document.addEventListener('dragend',clearHot);
 
 /* ---------- interactions ---------- */
+$('#guestList').addEventListener('dblclick',e=>{const el=e.target.closest('[data-g]');if(el&&!e.target.closest('button'))openEdit(el.dataset.g)});
 $('#guestList').addEventListener('click',e=>{
+  const ed=e.target.closest('[data-edit]');if(ed){openEdit(ed.dataset.edit);return}
   const d=e.target.closest('[data-del]');
   if(d){const g=gById(d.dataset.del);if(g&&confirm(`Remove ${g.name}?`)){S.guests=S.guests.filter(x=>x!==g);render()}return}
   const el=e.target.closest('[data-g]');if(el){selected=selected===el.dataset.g?null:el.dataset.g;renderGuests()}
@@ -368,6 +514,8 @@ stage.addEventListener('change',e=>{
   const r=e.target.closest('[data-rename]');if(r){tableById(r.dataset.rename).name=r.value.trim()||'Table';render()}
 });
 stage.addEventListener('pointerdown',e=>{
+  if(e.target.id==='venue'&&S.venue&&!S.venue.locked){
+    drag={t:S.venue,el:e.target,sx:e.clientX,sy:e.clientY,ox:S.venue.x,oy:S.venue.y,free:true};e.target.setPointerCapture(e.pointerId);return}
   const h=e.target.closest('[data-handle]');if(!h||e.target.tagName==='INPUT')return;
   const t=tableById(h.dataset.handle);
   selTable=t.id;document.querySelectorAll('.table.sel').forEach(x=>x.classList.remove('sel'));h.closest('.table').classList.add('sel');
@@ -376,14 +524,17 @@ stage.addEventListener('pointerdown',e=>{
 });
 stage.addEventListener('pointermove',e=>{
   if(!drag)return;
+  if(drag.free){drag.t.x=Math.round(drag.ox+(e.clientX-drag.sx)/zoom);drag.t.y=Math.round(drag.oy+(e.clientY-drag.sy)/zoom)}
+  else{
   drag.t.x=Math.max(60,Math.round((drag.ox+(e.clientX-drag.sx)/zoom)/12)*12);
-  drag.t.y=Math.max(80,Math.round((drag.oy+(e.clientY-drag.sy)/zoom)/12)*12);
+  drag.t.y=Math.max(80,Math.round((drag.oy+(e.clientY-drag.sy)/zoom)/12)*12);}
   drag.el.style.left=drag.t.x+'px';drag.el.style.top=drag.t.y+'px';
 });
 stage.addEventListener('pointerup',()=>{if(drag){drag=null;save()}});
 
-function addGuest(name,group,meal){name=name.trim();if(!name)return false;S.guests.push({id:uid(),name,group:(group||'').trim(),meal:meal||'',table:null,seat:null});return true}
-$('#gAdd').onclick=()=>{if(addGuest($('#gName').value,$('#gGroup').value,$('#gMeal').value)){$('#gName').value='';render()}$('#gName').focus()};
+function addGuest(name,group,meal){name=name.trim();if(!name)return false;S.guests.push({id:uid(),name,group:ensureGroup(group),meal:meal||'',rsvp:'pending',email:'',notes:'',table:null,seat:null});return true}
+bindGroup($('#gGroup'),$('#gGroupNew'),render);
+$('#gAdd').onclick=()=>{commitGroup($('#gGroup'),$('#gGroupNew'));if(addGuest($('#gName').value,$('#gGroup').value,$('#gMeal').value)){$('#gName').value='';render()}$('#gName').focus()};
 $('#gName').onkeydown=e=>{if(e.key==='Enter')$('#gAdd').click()};
 $('#search').oninput=renderGuests;
 $('#filter').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;fmode=b.dataset.f;document.querySelectorAll('#filter button').forEach(x=>x.classList.toggle('on',x===b));renderGuests()};
@@ -404,7 +555,7 @@ function addTable(shape){
 $('#addRound').onclick=()=>addTable('round');$('#addRect').onclick=()=>addTable('rect');
 
 $('#autoBtn').onclick=()=>{
-  const un=S.guests.filter(g=>!g.table).sort((a,b)=>(a.group||'~').localeCompare(b.group||'~'));
+  const un=S.guests.filter(g=>!g.table&&rs(g)!=='no').sort((a,b)=>(a.group||'~').localeCompare(b.group||'~'));
   if(!un.length){toast('Everyone is already seated');return}
   let placed=0;
   for(const g of un){outer:for(const t of S.tables)for(let i=0;i<t.seats;i++)if(!occupant(t,i)){g.table=t.id;g.seat=i;placed++;break outer}}
@@ -414,14 +565,14 @@ $('#autoBtn').onclick=()=>{
 const download=(name,text,type)=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
 $('#csvBtn').onclick=()=>{
   const q=v=>`"${String(v||'').replace(/"/g,'""')}"`;
-  const rows=[['Name','Group','Meal','Table','Seat']].concat(S.guests.map(g=>{const t=tableById(g.table);return [g.name,g.group,g.meal,t?t.name:'',g.seat!=null?g.seat+1:'']}));
+  const rows=[['Name','Group','Meal','RSVP','Email','Notes','Table','Seat']].concat(S.guests.map(g=>{const t=tableById(g.table);return [g.name,g.group,g.meal,RS[rs(g)],g.email,g.notes,t?t.name:'',g.seat!=null?g.seat+1:'']}));
   download('seating-chart.csv',rows.map(r=>r.map(q).join(',')).join('\n'),'text/csv');toast('Guest list exported');
 };
 $('#saveBtn').onclick=()=>{download('seating-plan.json',JSON.stringify(S,null,1),'application/json');toast('Plan saved to a file')};
 $('#loadBtn').onclick=()=>$('#fileIn').click();
 $('#fileIn').onchange=e=>{
   const f=e.target.files[0];if(!f)return;
-  f.text().then(t=>{try{const d=JSON.parse(t);if(!Array.isArray(d.guests)||!Array.isArray(d.tables))throw 0;S=d;render();toast('Plan opened')}catch(_){toast('That file is not a valid seating plan')}});
+  f.text().then(t=>{try{const d=JSON.parse(t);if(!Array.isArray(d.guests)||!Array.isArray(d.tables))throw 0;S=d;S.groups=groups();render();toast('Plan opened')}catch(_){toast('That file is not a valid seating plan')}});
   e.target.value='';
 };
 $('#themeBtn').onclick=()=>{S.theme=S.theme==='noir'?'ivory':'noir';render()};
@@ -433,6 +584,146 @@ $('#printBtn').onclick=()=>{
     [...S.guests].filter(g=>g.table).sort((a,b)=>a.name.localeCompare(b.name)).map(g=>`${esc(g.name)} — <i>${esc(tableById(g.table).name)}</i><br>`).join('')+'</div>';
   window.print();
 };
+
+/* ---------- edit guest ---------- */
+const RS={yes:'Attending',pending:'Awaiting',no:'Declined'};
+const eDlg=$('#editDlg');let editing=null;
+bindGroup($('#eGroup'),$('#eGroupNew'));
+function openEdit(id){
+  editing=id?gById(id):null;
+  const g=editing||{name:'',group:'',meal:'',rsvp:'pending',email:'',notes:''};
+  $('#editTitle').textContent=editing?'Edit guest':'Add a guest';
+  $('#eName').value=g.name;fillGroupSelect($('#eGroup'),g.group||'');$('#eGroupNew').hidden=true;$('#eGroupNew').value='';
+  fillMeal($('#eMeal'),g.meal);$('#eRsvp').value=rs(g);$('#eEmail').value=g.email||'';$('#eNotes').value=g.notes||'';
+  $('#eDelete').hidden=!editing;eDlg.showModal();$('#eName').focus();
+}
+$('#editForm').addEventListener('submit',e=>{
+  e.preventDefault();commitGroup($('#eGroup'),$('#eGroupNew'));
+  const gv=$('#eGroup').value,v={name:$('#eName').value.trim(),group:gv==='__new'?'':gv,meal:$('#eMeal').value,rsvp:$('#eRsvp').value,email:$('#eEmail').value.trim(),notes:$('#eNotes').value.trim()};
+  if(!v.name)return;
+  let g=editing;if(g)Object.assign(g,v);else{g={id:uid(),table:null,seat:null,...v};S.guests.push(g)}
+  if(v.rsvp==='no')unseat(g);
+  eDlg.close();render();toast(editing?'Guest updated':'Guest added');
+});
+$('#eCancel').onclick=()=>eDlg.close();
+$('#eDelete').onclick=()=>{if(editing&&confirm(`Remove ${editing.name}?`)){S.guests=S.guests.filter(x=>x!==editing);eDlg.close();render()}};
+
+/* ---------- views + RSVP dashboard ---------- */
+$('#viewNav').onclick=e=>{
+  const b=e.target.closest('[data-v]');if(!b)return;view=b.dataset.v;
+  document.body.classList.toggle('view-rsvp',view==='rsvp');
+  document.querySelectorAll('#viewNav button').forEach(x=>x.classList.toggle('on',x===b));render();
+};
+function renderRsvp(){
+  const G=S.guests,n=G.length,c={yes:0,no:0,pending:0};G.forEach(g=>c[rs(g)]++);
+  $('#rEvent').textContent=S.event||'Your Event';
+  $('#rStats').innerHTML=[['Invited',n,'var(--ink)'],['Attending',c.yes,'var(--yes)'],['Declined',c.no,'var(--no)'],['Awaiting reply',c.pending,'var(--gold)']]
+    .map(([l,v,col])=>`<div class="card stat-big"><b style="color:${col}">${v}</b><span class="caps">${l}</span></div>`).join('');
+  const R=54,C=2*Math.PI*R,ya=n?c.yes/n*C:0,na=n?c.no/n*C:0,pct=n?Math.round((c.yes+c.no)/n*100):0;
+  const arc=(col,len,off)=>`<circle cx="70" cy="70" r="${R}" fill="none" style="stroke:${col}" stroke-width="12" stroke-dasharray="${len} ${C}" stroke-dashoffset="${-off}" transform="rotate(-90 70 70)"/>`;
+  $('#rRing').innerHTML=`<svg viewBox="0 0 140 140" width="132" height="132" role="img" aria-label="${pct}% responded"><circle cx="70" cy="70" r="${R}" fill="none" style="stroke:var(--line)" stroke-width="12"/>${arc('var(--yes)',ya,0)}${arc('var(--no)',na,ya)}<text x="70" y="77" text-anchor="middle" style="font-family:var(--serif);font-size:30px;fill:var(--ink)">${pct}%</text></svg>
+    <div><span class="caps">Responded</span><p>${c.yes+c.no} of ${n} guests have replied.</p><p><b style="color:var(--yes)">●</b> Attending &nbsp;<b style="color:var(--no)">●</b> Declined</p></div>`;
+  const m={};G.filter(g=>rs(g)==='yes').forEach(g=>{const k=g.meal||'No preference';m[k]=(m[k]||0)+1});
+  const mx=Math.max(1,...Object.values(m));
+  $('#rMeals').innerHTML=Object.keys(m).length?Object.entries(m).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="bar-row"><span>${esc(k)}</span><div class="track"><i style="width:${v/mx*100}%"></i></div><b>${v}</b></div>`).join(''):'<p class="muted">Meal counts appear once guests are marked attending.</p>';
+  const gl=[...groups(),''].map(name=>{const gg=G.filter(g=>(g.group||'')===name);return {name,gg}}).filter(x=>x.gg.length||x.name);
+  $('#rGroups').innerHTML=gl.length?gl.map(({name,gg})=>{
+    const y=gg.filter(g=>rs(g)==='yes').length,no=gg.filter(g=>rs(g)==='no').length,p=gg.length-y-no,t=Math.max(1,gg.length);
+    return `<div class="grow"><span>${esc(name||'No group')}</span><div class="track" title="${y} attending · ${no} declined · ${p} awaiting"><i class="y" style="width:${y/t*100}%"></i><i class="n" style="width:${no/t*100}%"></i><i class="p" style="width:${p/t*100}%"></i></div><span>${name?`<button class="lnk" data-gren="${esc(name)}">Rename</button><button class="lnk" data-gdel="${esc(name)}">Delete</button>`:`<span class="muted">${gg.length}</span>`}</span></div>`}).join(''):'<p class="muted">Add guests to see group totals.</p>';
+  const q=$('#rSearch').value.toLowerCase();
+  const rows=G.filter(g=>(rFilter==='all'||rs(g)===rFilter)&&(g.name+' '+(g.group||'')+' '+(g.email||'')).toLowerCase().includes(q)).sort((a,b)=>a.name.localeCompare(b.name));
+  $('#rRows').innerHTML=rows.map(g=>`<div class="rrow"><div class="rn"><b>${esc(g.name)}</b>${g.notes?`<div class="muted" title="${esc(g.notes)}">${esc(g.notes.slice(0,46))}${g.notes.length>46?'…':''}</div>`:''}</div>
+    <div>${g.group?`<span class="chip">${esc(g.group)}</span>`:'<span class="muted">—</span>'}</div><div class="muted hm">${esc(g.meal||'—')}</div><div class="muted hm" style="overflow:hidden;text-overflow:ellipsis">${esc(g.email||'—')}</div>
+    <div class="seg rs">${['yes','pending','no'].map(k=>`<button class="${k} ${rs(g)===k?'on':''}" data-rs="${k}" data-id="${g.id}">${k==='yes'?'Yes':k==='no'?'No':'Wait'}</button>`).join('')}</div>
+    <button class="btn ghost" data-edit="${g.id}">Edit</button></div>`).join('')
+    ||`<div class="empty">${n?'No guests match.':'No guests yet'}<small>${n?'':'Add your first guest to begin tracking replies.'}</small></div>`;
+}
+$('#rsvp').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.rs){const g=gById(b.dataset.id);g.rsvp=b.dataset.rs;if(g.rsvp==='no')unseat(g);render();return}
+  if(b.dataset.edit){openEdit(b.dataset.edit);return}
+  if(b.dataset.rf){rFilter=b.dataset.rf;document.querySelectorAll('#rFilter button').forEach(x=>x.classList.toggle('on',x===b));renderRsvp();return}
+  if(b.dataset.gren){
+    const old=b.dataset.gren,nn=(prompt('Rename group',old)||'').trim();if(!nn||nn===old)return;
+    if(groups().some(x=>x!==old&&x.toLowerCase()===nn.toLowerCase())){toast('A group with that name already exists');return}
+    S.groups=S.groups.map(x=>x===old?nn:x);S.guests.forEach(g=>{if(g.group===old)g.group=nn});render();return}
+  if(b.dataset.gdel){
+    const old=b.dataset.gdel;if(!confirm(`Delete the group "${old}"? Its guests will have no group.`))return;
+    S.groups=S.groups.filter(x=>x!==old);S.guests.forEach(g=>{if(g.group===old)g.group=''});render()}
+});
+$('#rSearch').oninput=renderRsvp;
+$('#rAdd').onclick=()=>openEdit(null);
+$('#rCsv').onclick=()=>$('#csvBtn').click();
+$('#rCopy').onclick=()=>{
+  const p=S.guests.filter(g=>rs(g)==='pending');if(!p.length){toast('Everyone has replied');return}
+  const txt=p.map(g=>g.name+(g.email?` <${g.email}>`:'')).join('\n');
+  (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast(`${p.length} awaiting guest${p.length>1?'s':''} copied`),()=>toast('Copy was blocked by the browser'));
+};
+$('#rMail').onclick=()=>{
+  const em=S.guests.filter(g=>rs(g)==='pending'&&g.email).map(g=>g.email);
+  if(!em.length){toast('No awaiting guests have an email address yet');return}
+  location.href='mailto:?bcc='+em.map(encodeURIComponent).join(',')+'&subject='+encodeURIComponent('RSVP reminder'+(S.event?' · '+S.event:''))+'&body='+encodeURIComponent('Hello! A gentle reminder to let us know whether you can join us. Thank you!');
+};
+
+/* ---------- venue layout ---------- */
+const vImg=$('#venue');
+function renderVenue(){
+  const v=S.venue;
+  if(!v){vImg.style.display='none';vImg._src=null;$('#vCtl').hidden=true;return}
+  if(vImg._src!==v.src){vImg.src=v.src;vImg._src=v.src}
+  Object.assign(vImg.style,{display:'block',left:v.x+'px',top:v.y+'px',width:v.w+'px',height:v.w*v.ratio+'px',opacity:v.opacity});
+  vImg.classList.toggle('edit',!v.locked);
+  $('#vCtl').hidden=false;$('#vOp').value=Math.round(v.opacity*100);$('#vSize').value=v.w;
+  $('#vLock').textContent=v.locked?'Unlock to move':'Lock position';
+}
+$('#venueBtn').onclick=()=>{const p=$('#venuePanel');p.hidden=!p.hidden};
+$('#vUp').onclick=()=>$('#vFile').click();
+$('#vFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)loadVenue(f)};
+$('#vOp').oninput=e=>{S.venue.opacity=e.target.value/100;vImg.style.opacity=S.venue.opacity};
+$('#vOp').onchange=save;
+$('#vSize').oninput=e=>{S.venue.w=+e.target.value;vImg.style.width=S.venue.w+'px';vImg.style.height=S.venue.w*S.venue.ratio+'px'};
+$('#vSize').onchange=save;
+$('#vLock').onclick=()=>{S.venue.locked=!S.venue.locked;render()};
+$('#vRemove').onclick=()=>{if(confirm('Remove the venue layout?')){S.venue=null;render()}};
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#venuePanel').hidden=true});
+
+const readURL=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(f)});
+const loadImg=src=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=src});
+function shrink(source,w,h,max=2400){
+  const k=Math.min(1,max/Math.max(w,h)),c=document.createElement('canvas');c.width=Math.round(w*k);c.height=Math.round(h*k);
+  const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(source,0,0,c.width,c.height);
+  return {src:c.toDataURL('image/jpeg',.85),w:c.width,h:c.height};
+}
+let pdfReady;
+function loadPdfJs(){
+  return pdfReady||(pdfReady=new Promise((res,rej)=>{
+    const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    s.onload=()=>{pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';res(pdfjsLib)};
+    s.onerror=()=>{pdfReady=null;rej(new Error('pdfjs'))};document.head.appendChild(s)}));
+}
+async function pdfToImage(file){
+  const lib=await loadPdfJs();
+  const doc=await lib.getDocument({data:await file.arrayBuffer()}).promise;
+  const page=await doc.getPage(1),base=page.getViewport({scale:1}),vp=page.getViewport({scale:2400/Math.max(base.width,base.height)});
+  const c=document.createElement('canvas');c.width=Math.round(vp.width);c.height=Math.round(vp.height);
+  const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);
+  await page.render({canvasContext:x,viewport:vp}).promise;
+  return {src:c.toDataURL('image/jpeg',.85),w:c.width,h:c.height,pages:doc.numPages};
+}
+async function loadVenue(file){
+  const n=file.name.toLowerCase();
+  if(n.endsWith('.skp')){$('#venuePanel').hidden=false;toast('SketchUp files can\'t be opened in a browser. Export a top view as JPG or PDF from SketchUp, then upload that.',8000);return}
+  let r;
+  try{
+    toast('Reading your layout…',20000);
+    if(file.type==='application/pdf'||n.endsWith('.pdf'))r=await pdfToImage(file);
+    else if(file.type.startsWith('image/')){const i=await loadImg(await readURL(file));r=shrink(i,i.naturalWidth,i.naturalHeight)}
+    else{toast('Please choose a JPG, PNG or PDF');return}
+  }catch(err){toast(err.message==='pdfjs'?'PDF support needs an internet connection the first time. Try a JPG, or reconnect.':'Could not read that file',6000);return}
+  const w=Math.min(r.w,1100);
+  S.venue={src:r.src,x:420,y:60,w,ratio:r.h/r.w,opacity:.6,locked:false};
+  render();toast(r.pages>1?`Using page 1 of ${r.pages}. Drag the layout to position it, then lock it.`:'Layout added. Drag it to position it, then lock it.',5000);
+}
 render();
 })();
 </script>

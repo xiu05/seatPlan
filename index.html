@@ -15,12 +15,12 @@
   --solid:#2b2119;--solid-ink:#f3ebd7;--stagebg:#7b7d57;--vig:#43452b;--seat-line:#efe6cf;--seat-ink:#efe6cf;--hint:#efe6cfd0;
   --hero:#f6eed8;--herobg:linear-gradient(135deg,#8a8c63,#686a46);--halo:#7b7d57;--grain:.4;
 }
-:root[data-theme="espresso"]{
-  --bg:#1e1611;--bg2:#372a20;--panel:#2a1f18;--paper:#35281f;--ink:#efe4cd;--mute:#a39379;--line:#45372a;
-  --gold:#c4a569;--gold-soft:#c4a56940;--warn:#e0866d;--shadow:0 1px 2px #0008,0 18px 50px -14px #000b;
-  --table:#3d2e23;--dot:#2c211a;--yes:#93b08b;--no:#e0866d;
-  --solid:#c4a569;--solid-ink:#1e1611;--stagebg:#1e1611;--vig:#0f0a07;--seat-line:#6f5d4a;--seat-ink:#a39379;--hint:#a39379;
-  --hero:#efe4cd;--herobg:linear-gradient(135deg,#3a2b20,#241a13);--halo:#1e1611;--grain:.55;
+:root[data-theme="forest"]{
+  --bg:#f4f8f3;--bg2:#e6eee6;--panel:#fcfdfb;--paper:#ffffff;--ink:#1f3328;--mute:#5d7266;--line:#dae4db;
+  --gold:#3f7656;--gold-soft:#3f765638;--warn:#b5604f;--shadow:0 1px 2px #0f1f1633,0 18px 44px -14px #0f1f168a;
+  --table:#ffffff;--dot:#587a66;--yes:#3f7a54;--no:#b5604f;
+  --solid:#2f5d46;--solid-ink:#ffffff;--stagebg:#3a5a48;--vig:#1c3226;--seat-line:#e7f0e9;--seat-ink:#e7f0e9;--hint:#dbe8de;
+  --hero:#ffffff;--herobg:linear-gradient(135deg,#4d7360,#2b4637);--halo:#3a5a48;--grain:.35;
 }
 :root[data-theme="garden"]{
   --bg:#f6f1e1;--bg2:#ebe4cf;--panel:#fbf7ea;--paper:#fffcf3;--ink:#3b3340;--mute:#7a7080;--line:#e1d9c3;
@@ -460,7 +460,7 @@ function ensureGroup(name){
   const ex=groups().find(x=>x.toLowerCase()===name.toLowerCase());
   if(ex)return ex;S.groups.push(name);return name;
 }
-const THEMES=['olive','espresso','garden'],THEME_NAMES=['Olive','Espresso','Garden'];
+const THEMES=['olive','forest','garden'],THEME_NAMES=['Olive','Green & White','Garden'];
 const MEALS=['Chicken','Beef','Fish','Vegetarian','Vegan','Kids'];
 function fillGroupSelect(sel,val){
   const gs=groups();
@@ -498,7 +498,7 @@ const unseat=g=>{g.table=null;g.seat=null};
 
 /* ---------- render ---------- */
 function render(){
-  if(!THEMES.includes(S.theme))S.theme=S.theme==='noir'?'espresso':'olive';
+  if(!THEMES.includes(S.theme))S.theme=(S.theme==='noir'||S.theme==='espresso')?'forest':'olive';
   document.documentElement.dataset.theme=S.theme;
   $('#themeBtn').textContent=THEME_NAMES[(THEMES.indexOf(S.theme)+1)%THEMES.length];
   const words=(S.event||'').split(/\s*(?:&|\+|\band\b)\s*|\s+/).filter(Boolean);
